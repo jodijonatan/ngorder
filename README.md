@@ -1,4 +1,4 @@
-# Toko - E-Commerce Platform
+# Ngorder - E-Commerce Platform
 
 A modern, full-stack e-commerce application built with Next.js, featuring user authentication, product management, order processing, and an admin dashboard.
 
