@@ -1,5 +1,3 @@
-import Navbar from "@/components/Navbar";
-
 export default function AdminLayout({
   children,
 }: {
@@ -7,7 +5,6 @@ export default function AdminLayout({
 }) {
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
-      <Navbar />
       <main className="p-6">{children}</main>
     </div>
   );

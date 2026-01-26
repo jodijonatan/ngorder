@@ -48,29 +48,33 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/"
-              className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 group"
-            >
-              <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span>Beranda</span>
-            </Link>
+            {session?.user?.role !== "ADMIN" && (
+              <>
+                <Link
+                  href="/"
+                  className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 group"
+                >
+                  <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <span>Beranda</span>
+                </Link>
 
-            <Link
-              href="/shop"
-              className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 group"
-            >
-              <Store className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span>Belanja</span>
-            </Link>
+                <Link
+                  href="/shop"
+                  className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 group"
+                >
+                  <Store className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <span>Belanja</span>
+                </Link>
 
-            <Link
-              href="/cart"
-              className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 group"
-            >
-              <ShoppingCart className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span>Keranjang</span>
-            </Link>
+                <Link
+                  href="/cart"
+                  className="flex items-center space-x-1 text-gray-300 hover:text-white transition-colors duration-200 group"
+                >
+                  <ShoppingCart className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                  <span>Keranjang</span>
+                </Link>
+              </>
+            )}
 
             {session?.user?.role === "ADMIN" && (
               <Link
@@ -105,18 +109,20 @@ export default function Navbar() {
               <Search className="w-5 h-5" />
             </button>
 
-            {/* Cart */}
-            <Link
-              href="/cart"
-              className="relative p-2 text-gray-400 hover:text-white transition-colors duration-200 group"
-            >
-              <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">
-                  {cartItemCount}
-                </span>
-              )}
-            </Link>
+            {/* Cart - Only show for non-admin users */}
+            {session?.user?.role !== "ADMIN" && (
+              <Link
+                href="/cart"
+                className="relative p-2 text-gray-400 hover:text-white transition-colors duration-200 group"
+              >
+                <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">
+                    {cartItemCount}
+                  </span>
+                )}
+              </Link>
+            )}
 
             {/* User Menu */}
             <div className="relative">
@@ -230,37 +236,41 @@ export default function Navbar() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-slate-700 pt-4 pb-2">
             <div className="space-y-2">
-              <Link
-                href="/"
-                className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors duration-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Home className="w-4 h-4" />
-                <span>Beranda</span>
-              </Link>
+              {session?.user?.role !== "ADMIN" && (
+                <>
+                  <Link
+                    href="/"
+                    className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Home className="w-4 h-4" />
+                    <span>Beranda</span>
+                  </Link>
 
-              <Link
-                href="/shop"
-                className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors duration-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Store className="w-4 h-4" />
-                <span>Belanja</span>
-              </Link>
+                  <Link
+                    href="/shop"
+                    className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Store className="w-4 h-4" />
+                    <span>Belanja</span>
+                  </Link>
 
-              <Link
-                href="/cart"
-                className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors duration-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <ShoppingCart className="w-4 h-4" />
-                <span>Keranjang</span>
-                {cartItemCount > 0 && (
-                  <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                    {cartItemCount}
-                  </span>
-                )}
-              </Link>
+                  <Link
+                    href="/cart"
+                    className="flex items-center space-x-2 px-3 py-2 text-gray-300 hover:bg-slate-700 hover:text-white rounded-lg transition-colors duration-200"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    <span>Keranjang</span>
+                    {cartItemCount > 0 && (
+                      <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                        {cartItemCount}
+                      </span>
+                    )}
+                  </Link>
+                </>
+              )}
 
               {session?.user?.role === "ADMIN" && (
                 <Link

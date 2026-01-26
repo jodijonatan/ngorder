@@ -1,11 +1,26 @@
 "use client";
 
 import { useCart } from "@/store/cart";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, getTotalPrice } = useCart();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "loading") return;
+
+    // Redirect admin users away from cart
+    if (session?.user?.role === "ADMIN") {
+      router.push("/admin");
+      return;
+    }
+  }, [session, status, router]);
 
   const totalPrice = getTotalPrice();
 

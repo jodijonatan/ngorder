@@ -26,8 +26,6 @@ declare module "next-auth/jwt" {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-
   providers: [
     Credentials({
       name: "Credentials",
@@ -76,7 +74,7 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      if (session.user) {
+      if (session?.user) {
         session.user.role = token.role as string;
       }
       return session;
@@ -87,7 +85,8 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret:
+    process.env.NEXTAUTH_SECRET || "fallback-secret-key-change-in-production",
 };
 
 /**

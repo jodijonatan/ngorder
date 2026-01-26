@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
 import { useCart } from "@/store/cart";
 import { Search, Filter } from "lucide-react";
@@ -19,10 +21,20 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const { addItem } = useCart();
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
+    if (status === "loading") return;
+
+    // Redirect admin users away from shop
+    if (session?.user?.role === "ADMIN") {
+      router.push("/admin");
+      return;
+    }
+
     fetchProducts();
-  }, []);
+  }, [session, status, router]);
 
   const fetchProducts = async () => {
     try {
