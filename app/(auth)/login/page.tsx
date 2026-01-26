@@ -1,8 +1,9 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   LogIn,
   Mail,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,6 +37,9 @@ export default function LoginPage() {
 
       if (result?.error) {
         setError("Email atau password tidak sesuai. Silakan coba lagi.");
+      } else {
+        // Redirect to the redirect page which will handle role-based redirection
+        router.push("/redirect");
       }
     } catch (error) {
       setError("Terjadi gangguan koneksi. Coba beberapa saat lagi.");

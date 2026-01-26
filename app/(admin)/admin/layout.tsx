@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   Package,
@@ -31,6 +32,10 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/login" });
+  };
 
   return (
     <div className="min-h-screen bg-[#030712] flex">
@@ -80,7 +85,10 @@ export default function AdminLayout({
 
           {/* User Profile / Logout */}
           <div className="mt-auto pt-6 border-t border-white/5">
-            <button className="flex items-center space-x-3 px-4 py-3 w-full text-slate-500 hover:text-red-400 transition-colors group">
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-3 px-4 py-3 w-full text-slate-500 hover:text-red-400 transition-colors group"
+            >
               <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
               <span className="text-sm font-bold uppercase tracking-widest text-[10px]">
                 Sign Out

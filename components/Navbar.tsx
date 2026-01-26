@@ -116,14 +116,16 @@ export default function Navbar() {
             {/* User Profile / Auth */}
             <div className="relative group">
               {session ? (
-                <button className="flex items-center space-x-2 p-1 pl-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">
-                  <div className="w-7 h-7 bg-gradient-to-tr from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase">
-                    {session.user?.name?.substring(0, 2)}
-                  </div>
-                  <ChevronDown className="w-4 h-4 text-gray-400 group-hover:rotate-180 transition-transform duration-300" />
+                <>
+                  <button className="flex items-center space-x-2 p-1 pl-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">
+                    <div className="w-7 h-7 bg-gradient-to-tr from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                      {session.user?.name?.substring(0, 2)}
+                    </div>
+                    <ChevronDown className="w-4 h-4 text-gray-400 group-hover:rotate-180 transition-transform duration-300" />
+                  </button>
 
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 top-full mt-2 w-56 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200">
+                  <div className="absolute right-0 top-full mt-2 w-56 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50">
                     <div className="bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden p-2">
                       <div className="px-4 py-3 border-b border-white/5 mb-1">
                         <p className="text-xs text-gray-400">Signed in as</p>
@@ -150,7 +152,7 @@ export default function Navbar() {
                       </button>
                     </div>
                   </div>
-                </button>
+                </>
               ) : (
                 <button
                   onClick={() => signIn()}
