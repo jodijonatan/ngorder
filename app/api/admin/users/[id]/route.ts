@@ -7,17 +7,30 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const product = await prisma.product.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        orders: {
+          select: {
+            id: true,
+            total: true,
+            status: true,
+          },
+        },
+      },
     });
 
-    if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(product);
+    return NextResponse.json(user);
   } catch (error) {
-    console.error("Error fetching product:", error);
+    console.error("Error fetching user:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
@@ -32,21 +45,26 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, price, stock, description } = body;
+    const { name, email, role } = body;
 
-    const updatedProduct = await prisma.product.update({
+    const updatedUser = await prisma.user.update({
       where: { id },
       data: {
         name,
-        price,
-        stock,
-        description,
+        email,
+        role,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
       },
     });
 
-    return NextResponse.json(updatedProduct);
+    return NextResponse.json(updatedUser);
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error("Error updating user:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },
@@ -60,13 +78,13 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await prisma.product.delete({
+    await prisma.user.delete({
       where: { id },
     });
 
-    return NextResponse.json({ message: "Product deleted successfully" });
+    return NextResponse.json({ message: "User deleted successfully" });
   } catch (error) {
-    console.error("Error deleting product:", error);
+    console.error("Error deleting user:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 },

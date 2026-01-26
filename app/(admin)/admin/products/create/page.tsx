@@ -1,0 +1,312 @@
+"use client";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  Upload,
+  X,
+  Package,
+  DollarSign,
+  Hash,
+  FileText,
+  Save,
+  Loader2,
+  Sparkles,
+  Image as ImageIcon,
+} from "lucide-react";
+
+export default function CreateProductPage() {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (session?.user?.role !== "ADMIN") {
+      router.push("/");
+    }
+  }, [session, status, router]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError("Ukuran gambar maksimal 5MB");
+        return;
+      }
+      setImage(file);
+      const reader = new FileReader();
+      reader.onload = () => setImagePreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImage(null);
+    setImagePreview(null);
+  };
+
+  const generateSlug = (name: string) => {
+    return name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .trim();
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+
+    try {
+      const slug = generateSlug(name);
+      let imageUrl = null;
+
+      // Convert image to base64 if exists
+      if (image) {
+        imageUrl = imagePreview;
+      }
+
+      const response = await fetch("/api/admin/products", {
+        method: "POST",
+        body: JSON.stringify({
+          name,
+          slug,
+          price: parseFloat(price),
+          stock: parseInt(stock),
+          description,
+          image: imageUrl,
+        }),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.ok) {
+        router.push("/admin/products");
+      } else {
+        const data = await response.json();
+        setError(data.error || "Gagal menyimpan produk.");
+      }
+    } catch (err) {
+      setError("Terjadi kesalahan sistem.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#030712] relative overflow-hidden pb-20">
+      {/* Background Ambience */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-pink-600/5 blur-[120px] rounded-full -z-10" />
+
+      <div className="max-w-4xl mx-auto px-6 pt-12 relative z-10">
+        {/* Breadcrumb & Navigation */}
+        <Link
+          href="/admin/products"
+          className="group inline-flex items-center text-slate-500 hover:text-white transition-all mb-8"
+        >
+          <div className="p-2 bg-white/5 rounded-lg mr-3 group-hover:bg-white/10 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+          </div>
+          <span className="text-sm font-bold uppercase tracking-widest">
+            Back to Inventory
+          </span>
+        </Link>
+
+        {/* Page Title */}
+        <div className="mb-12">
+          <div className="flex items-center space-x-3 mb-2">
+            <Sparkles className="w-5 h-5 text-purple-400" />
+            <span className="text-xs font-black text-purple-400 uppercase tracking-[0.4em]">
+              New Collection
+            </span>
+          </div>
+          <h1 className="text-5xl font-black text-white tracking-tighter">
+            PUBLISH <span className="text-slate-600">PRODUCT</span>
+          </h1>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 lg:grid-cols-12 gap-8"
+        >
+          {/* Left Column: Media Upload */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-6 backdrop-blur-xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center">
+                  <ImageIcon className="w-4 h-4 mr-2 text-purple-500" /> Media
+                </h3>
+              </div>
+
+              <div className="relative group">
+                {imagePreview ? (
+                  <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full aspect-square object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="bg-red-500 hover:bg-red-600 text-white p-4 rounded-full transform scale-90 group-hover:scale-100 transition-all shadow-xl"
+                      >
+                        <X className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label
+                    htmlFor="image-upload"
+                    className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-white/10 rounded-[2rem] hover:bg-white/[0.02] hover:border-purple-500/50 transition-all cursor-pointer group"
+                  >
+                    <div className="p-5 bg-white/5 rounded-full mb-4 group-hover:scale-110 transition-transform">
+                      <Upload className="w-8 h-8 text-slate-400 group-hover:text-purple-400" />
+                    </div>
+                    <p className="text-sm font-bold text-white uppercase tracking-tighter">
+                      Drop your image
+                    </p>
+                    <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-medium">
+                      Max size 5MB
+                    </p>
+                    <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Details */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-8 backdrop-blur-xl space-y-6">
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-xs font-bold animate-pulse uppercase tracking-tight">
+                  Error: {error}
+                </div>
+              )}
+
+              {/* Product Name */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
+                  Product Name
+                </label>
+                <div className="relative group">
+                  <Package className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-purple-500 transition-colors" />
+                  <input
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-black/40 border border-white/5 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
+                    placeholder="Minimalist Leather Jacket"
+                  />
+                </div>
+              </div>
+
+              {/* Price & Stock Row */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
+                    Price (IDR)
+                  </label>
+                  <div className="relative group">
+                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-purple-500 transition-colors" />
+                    <input
+                      type="number"
+                      required
+                      value={price}
+                      onChange={(e) => setPrice(e.target.value)}
+                      className="w-full bg-black/40 border border-white/5 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
+                    Inventory
+                  </label>
+                  <div className="relative group">
+                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-purple-500 transition-colors" />
+                    <input
+                      type="number"
+                      required
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
+                      className="w-full bg-black/40 border border-white/5 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
+                  Full Description
+                </label>
+                <div className="relative group">
+                  <FileText className="absolute left-4 top-5 w-5 h-5 text-slate-600 group-focus-within:text-purple-500 transition-colors" />
+                  <textarea
+                    rows={5}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full bg-black/40 border border-white/5 rounded-3xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all resize-none"
+                    placeholder="Tell the story about this product..."
+                  />
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex space-x-4 pt-4">
+                <Link
+                  href="/admin/products"
+                  className="flex-1 px-6 py-5 rounded-2xl bg-white/5 text-slate-400 font-bold text-xs uppercase tracking-widest text-center hover:bg-white/10 transition-all"
+                >
+                  Discard
+                </Link>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="flex-[2] relative group overflow-hidden bg-white text-black font-black py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative flex items-center justify-center space-x-2 group-hover:text-white transition-colors">
+                    {saving ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5" />
+                        <span className="text-xs uppercase tracking-widest">
+                          Publish Product
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

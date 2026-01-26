@@ -24,13 +24,13 @@ model User {
 }
 
 model Product {
-  id          String @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
-  slug        String @unique
+  slug        String  @unique
   price       Int
   stock       Int
-  image       String
-  description String
+  image       String?
+  description String?
 }
 
 model Order {
