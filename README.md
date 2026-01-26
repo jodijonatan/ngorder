@@ -1,36 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Toko - E-Commerce Platform
 
-## Getting Started
+A modern, full-stack e-commerce application built with Next.js, featuring user authentication, product management, order processing, and an admin dashboard.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **User Authentication**: Secure login and registration using NextAuth.js
+- **Product Management**: Browse and manage products with detailed information
+- **Shopping Cart**: Add products to cart and manage quantities
+- **Order Processing**: Complete checkout flow with order tracking
+- **Admin Dashboard**: Administrative interface for managing products and orders
+- **Responsive Design**: Mobile-first design using Tailwind CSS
+- **Database Integration**: PostgreSQL database with Prisma ORM
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js 16, React 19, TypeScript
+- **Styling**: Tailwind CSS
+- **Authentication**: NextAuth.js
+- **Database**: PostgreSQL with Prisma ORM
+- **Deployment**: Vercel-ready
+
+## 📋 Prerequisites
+
+Before running this application, make sure you have the following installed:
+
+- Node.js (version 18 or higher)
+- npm, yarn, pnpm, or bun
+- PostgreSQL database
+
+## 🔧 Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd ngorder
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   # or
+   bun install
+   ```
+
+3. **Set up environment variables**
+
+   Create a `.env.local` file in the root directory and add the following variables:
+
+   ```env
+   DATABASE_URL="postgresql://username:password@localhost:5432/toko_db"
+   NEXTAUTH_SECRET="your-nextauth-secret"
+   NEXTAUTH_URL="http://localhost:3000"
+   ```
+
+4. **Set up the database**
+
+   ```bash
+   # Generate Prisma client
+   npx prisma generate
+
+   # Run database migrations
+   npx prisma db push
+   ```
+
+5. **Start the development server**
+
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   # or
+   pnpm dev
+   # or
+   bun dev
+   ```
+
+6. **Open your browser**
+
+   Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
+
+## 📁 Project Structure
+
+```
+├── app/                    # Next.js app directory
+│   ├── (auth)/            # Authentication pages
+│   ├── (shop)/            # Shop pages
+│   ├── admin/             # Admin dashboard
+│   ├── api/               # API routes
+│   │   ├── auth/          # Authentication endpoints
+│   │   ├── products/      # Product management
+│   │   ├── orders/        # Order processing
+│   │   └── checkout/      # Checkout functionality
+│   ├── globals.css        # Global styles
+│   ├── layout.tsx         # Root layout
+│   └── providers.tsx      # Context providers
+├── components/            # Reusable React components
+│   ├── Button.tsx
+│   ├── Navbar.tsx
+│   └── ProductCard.tsx
+├── lib/                   # Utility libraries
+│   ├── auth.ts            # Authentication utilities
+│   ├── prisma.ts          # Database client
+│   └── utils.ts           # Helper functions
+├── prisma/                # Database schema and migrations
+│   └── schema.prisma
+├── store/                 # State management
+│   └── cart.ts            # Shopping cart store
+└── public/                # Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔌 API Endpoints
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/[...nextauth]` - NextAuth.js endpoints
 
-## Learn More
+### Products
 
-To learn more about Next.js, take a look at the following resources:
+- `GET /api/products` - Fetch all products
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Orders
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `GET /api/orders` - Fetch user orders
+- `POST /api/orders` - Create new order
 
-## Deploy on Vercel
+### Checkout
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `POST /api/checkout` - Process payment and create order
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy
+
+### Manual Deployment
+
+1. Build the application:
+
+   ```bash
+   npm run build
+   ```
+
+2. Start the production server:
+   ```bash
+   npm start
+   ```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+If you have any questions or need help, please open an issue on GitHub.
