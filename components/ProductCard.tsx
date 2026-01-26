@@ -1,6 +1,16 @@
 import Link from "next/link";
 
-export default function ProductCard({ product }: any) {
+interface Product {
+  id: string;
+  name: string;
+  slug: string;
+  price: number;
+  stock: number;
+  image: string;
+  description: string;
+}
+
+export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/product/${product.slug}`}>
       <div className="border border-neutral-800 p-4 hover:bg-neutral-900">
