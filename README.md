@@ -1,6 +1,6 @@
-# Ngorder - E-Commerce Platform
+# NGORDER - Digital Commerce Protocol
 
-A modern, full-stack e-commerce application built with Next.js, featuring user authentication, product management, order processing, and an admin dashboard.
+Next-generation e-commerce platform for modern business infrastructure. A modern, full-stack e-commerce application built with Next.js, featuring user authentication, product management, order processing, and an admin dashboard.
 
 ## 🚀 Features
 
@@ -15,9 +15,13 @@ A modern, full-stack e-commerce application built with Next.js, featuring user a
 ## 🛠 Tech Stack
 
 - **Frontend**: Next.js 16, React 19, TypeScript
-- **Styling**: Tailwind CSS
-- **Authentication**: NextAuth.js
+- **Styling**: Tailwind CSS v4
+- **Authentication**: NextAuth.js with Prisma Adapter
 - **Database**: PostgreSQL with Prisma ORM
+- **State Management**: Zustand, TanStack React Query
+- **Validation**: Zod
+- **Icons**: Lucide React
+- **Password Hashing**: bcrypt
 - **Deployment**: Vercel-ready
 
 ## 📋 Prerequisites
@@ -33,7 +37,7 @@ Before running this application, make sure you have the following installed:
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/jodijonatan/ngorder/
    cd ngorder
    ```
 
@@ -54,7 +58,7 @@ Before running this application, make sure you have the following installed:
    Create a `.env.local` file in the root directory and add the following variables:
 
    ```env
-   DATABASE_URL="postgresql://username:password@localhost:5432/toko_db"
+   DATABASE_URL="postgresql://username:password@localhost:5432/ngorder_db"
    NEXTAUTH_SECRET="your-nextauth-secret"
    NEXTAUTH_URL="http://localhost:3000"
    ```
