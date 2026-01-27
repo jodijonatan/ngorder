@@ -1,33 +1,54 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Colors */
-  --color-primary: #1a237e; /* Navy: Profesional & Terpercaya */
-  --color-secondary: #2962ff; /* Blue: Modern */
-  --color-accent: #ff6d00; /* Orange: Untuk Tombol CTA/Beli */
+  /* Brand Colors - Modern Tech Aesthetic */
+  --color-primary: #0f172a; /* Slate 900: Sangat profesional dan solid */
+  --color-secondary: #6366f1; /* Indigo 500: Modern, sering digunakan di SaaS */
+  --color-accent: #f59e0b; /* Amber 500: Lebih elegan daripada orange standar untuk CTA */
 
   /* Neutral Colors */
-  --color-surface: #f5f7fa; /* Background halaman */
-  --color-text-main: #1a1a1a; /* Warna teks utama */
-  --color-text-muted: #6b7280; /* Warna teks sekunder/deskripsi */
+  --color-surface: #f8fafc; /* Slate 50: Background yang sangat bersih, tidak melelahkan mata */
+  --color-text-main: #1e293b; /* Slate 800: Hitam yang lembut (soft black) */
+  --color-text-muted: #64748b; /* Slate 500: Abu-abu kebiruan untuk teks sekunder */
+
+  /* Additional: Border & Divider */
+  --color-border: #e2e8f0; /* Slate 200: Untuk garis pemisah yang halus */
 }
 
 body {
   height: 100%;
   background-color: var(--color-surface);
   color: var(--color-text-main);
-  font-family: sans-serif; /* Opsional: sesuaikan dengan font pilihan Anda */
+  /* Font modern: Inter atau Geist sangat disarankan */
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Contoh utility class kustom jika diperlukan */
+/* Custom Utility dengan sentuhan modern */
 .btn-primary {
-  background-color: var(--color-accent);
+  background-color: var(
+    --color-secondary
+  ); /* Gunakan secondary sebagai primary button */
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  transition: opacity 0.2s;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem; /* Lebih membulat = lebih modern */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary:hover {
-  opacity: 0.9;
+  background-color: #4f46e5; /* Indigo 600 */
+  transform: translateY(-1px); /* Efek sedikit mengangkat saat hover */
+}
+
+/* Khusus untuk CTA yang sangat mencolok */
+.btn-cta {
+  background-color: var(--color-accent);
+  color: #ffffff;
+  /* Tambahkan style lainnya mirip .btn-primary */
 }
