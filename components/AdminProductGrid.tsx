@@ -10,7 +10,7 @@ interface Product {
   price: number;
   stock: number;
   image: string | null;
-  description: string;
+  description: string | null;
 }
 
 interface AdminProductGridProps {
