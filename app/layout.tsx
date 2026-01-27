@@ -1,6 +1,20 @@
 import "./globals.css";
 import Providers from "./providers";
-import Navbar from "@/components/Navbar";
+// import Navbar from "@/components/Navbar";
+import { Metadata } from "next";
+
+// Konfigurasi Metadata Global
+export const metadata: Metadata = {
+  title: {
+    default: "NGORDER — Digital Commerce Protocol",
+    template: "%s | NGORDER",
+  },
+  description:
+    "Next-generation e-commerce platform for modern business infrastructure.",
+  icons: {
+    icon: "/favicon.ico", // Pastikan file ini ada di folder public
+  },
+};
 
 export default function RootLayout({
   children,
@@ -9,24 +23,33 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className="scroll-smooth">
-      <body className="bg-[#030712] text-slate-200 antialiased selection:bg-purple-500/30 selection:text-purple-200">
+      <body className="bg-surface text-text-main antialiased selection:bg-secondary/30 selection:text-secondary">
         <Providers>
-          {/* Background Decor - Elemen ini membuat kesan kedalaman (Depth) */}
+          {/* Global Background Infrastructure */}
           <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-            {/* Cahaya Ungu di pojok kiri atas */}
-            <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-purple-900/20 blur-[120px]" />
-            {/* Cahaya Biru di pojok kanan bawah */}
-            <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px]" />
-            {/* Grid Pattern halus untuk kesan tech */}
-            <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+            {/* Primary Ambience - Secondary Color (pojok kiri atas) */}
+            <div
+              className="absolute -top-[15%] -left-[10%] w-[50%] h-[50%] rounded-full bg-secondary/10 blur-[150px] animate-pulse"
+              style={{ animationDuration: "8s" }}
+            />
+
+            {/* Secondary Ambience - Accent Color (pojok kanan bawah) */}
+            <div
+              className="absolute -bottom-[15%] -right-[10%] w-[50%] h-[50%] rounded-full bg-accent/10 blur-[150px] animate-pulse"
+              style={{ animationDuration: "12s" }}
+            />
+
+            {/* Overlay Grid Pattern - Tech Aesthetic */}
+            <div className="absolute inset-0 bg-white bg-center opacity-[0.15] [mask-image:radial-gradient(ellipse_at_center,black,transparent)]" />
+
+            {/* Noise Texture */}
+            <div className="absolute inset-0 opacity-[0.02] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
           </div>
 
           <div className="relative flex min-h-screen flex-col">
-            {/* <Navbar /> */}
-
-            {/* Main Content dengan Padding Top untuk Navbar Fixed */}
-            <main className="flex-1">
-              <div className="w-full">{children}</div>
+            {/* Main Application Interface */}
+            <main className="flex-1 relative">
+              <div className="w-full h-full">{children}</div>
             </main>
           </div>
         </Providers>

@@ -14,6 +14,7 @@ import {
   ShoppingBag,
   Heart,
   CreditCard,
+  ChevronRight,
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -23,172 +24,219 @@ export default function ProfilePage() {
   useEffect(() => {
     if (status === "loading") return;
     if (!session) {
-      router.push("/");
+      router.push("/login");
       return;
     }
   }, [session, status, router]);
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-surface text-text-main flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p>Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary mx-auto mb-4"></div>
+          <p className="text-text-muted animate-pulse">
+            Menyiapkan profil Anda...
+          </p>
         </div>
       </div>
     );
   }
 
-  if (!session) {
-    return null;
-  }
+  if (!session) return null;
 
   const user = session.user;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 flex items-center space-x-2">
-            <User className="w-8 h-8 text-purple-500" />
-            <span>Profil Saya</span>
-          </h1>
-          <p className="text-gray-400">Kelola informasi akun Anda</p>
+    <div className="min-h-screen bg-surface text-text-main p-8 relative overflow-hidden">
+      {/* Efek Cahaya Latar */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -z-10" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary/5 blur-[120px] rounded-full -z-10" />
+
+      <div className="max-w-5xl mx-auto relative z-10">
+        {/* Header Section */}
+        <div className="mb-12">
+          <div className="inline-flex items-center space-x-3 mb-4">
+            <div className="p-3 bg-secondary/10 rounded-2xl ring-1 ring-secondary/20">
+              <User className="w-8 h-8 text-secondary" />
+            </div>
+            <h1 className="text-4xl font-black tracking-tighter uppercase">
+              Profil{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-accent">
+                Akun
+              </span>
+            </h1>
+          </div>
+          <p className="text-text-muted">
+            Kelola identitas dan pengaturan akun eksklusif Anda.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Profile Info Card */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center space-x-2">
-                <User className="w-5 h-5 text-purple-500" />
+          {/* Main Content Area */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Personal Information Card */}
+            <div className="bg-white/[0.02] border border-white/5 backdrop-blur-md rounded-[2.5rem] p-8 shadow-2xl">
+              <h2 className="text-xl font-black mb-8 flex items-center space-x-3 uppercase tracking-tight">
+                <div className="w-1.5 h-6 bg-secondary rounded-full" />
                 <span>Informasi Pribadi</span>
               </h2>
 
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <User className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-400">Nama Lengkap</p>
-                    <p className="text-white font-medium">
-                      {user?.name || "Tidak ada nama"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <Mail className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-400">Email</p>
-                    <p className="text-white font-medium">{user?.email}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <Shield className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-400">Role</p>
-                    <p className="text-white font-medium capitalize">
-                      {user?.role?.toLowerCase()}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  <Calendar className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-400">Bergabung Sejak</p>
-                    <p className="text-white font-medium">Januari 2024</p>
-                  </div>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <InfoItem
+                  icon={<User className="w-5 h-5" />}
+                  label="Nama Lengkap"
+                  value={user?.name || "Member Ngorder"}
+                />
+                <InfoItem
+                  icon={<Mail className="w-5 h-5" />}
+                  label="Alamat Email"
+                  value={user?.email || "-"}
+                />
+                <InfoItem
+                  icon={<Shield className="w-5 h-5" />}
+                  label="Tipe Keanggotaan"
+                  value={user?.role || "USER"}
+                  isHighlight
+                />
+                <InfoItem
+                  icon={<Calendar className="w-5 h-5" />}
+                  label="Bergabung Sejak"
+                  value="Januari 2026"
+                />
               </div>
             </div>
 
-            {/* Quick Actions */}
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
-              <h2 className="text-xl font-semibold mb-4">Aksi Cepat</h2>
-
+            {/* Quick Actions Grid */}
+            <div className="space-y-4">
+              <h2 className="text-sm font-bold text-text-muted uppercase tracking-[0.2em] ml-2">
+                Aksi Cepat
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Link
+                <ActionLink
                   href="/shop"
-                  className="flex items-center space-x-3 p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
-                >
-                  <ShoppingBag className="w-5 h-5 text-purple-500" />
-                  <span>Lanjut Belanja</span>
-                </Link>
-
-                <Link
+                  icon={<ShoppingBag className="w-5 h-5" />}
+                  title="Lanjut Belanja"
+                  color="text-secondary"
+                />
+                <ActionLink
                   href="/favorites"
-                  className="flex items-center space-x-3 p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
-                >
-                  <Heart className="w-5 h-5 text-red-500" />
-                  <span>Favorit Saya</span>
-                </Link>
-
-                <Link
+                  icon={<Heart className="w-5 h-5" />}
+                  title="Daftar Keinginan"
+                  color="text-red-400"
+                />
+                <ActionLink
                   href="/cart"
-                  className="flex items-center space-x-3 p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
-                >
-                  <CreditCard className="w-5 h-5 text-blue-500" />
-                  <span>Keranjang</span>
-                </Link>
-
-                <Link
+                  icon={<CreditCard className="w-5 h-5" />}
+                  title="Metode Pembayaran"
+                  color="text-accent"
+                />
+                <ActionLink
                   href="/profile/settings"
-                  className="flex items-center space-x-3 p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
-                >
-                  <Settings className="w-5 h-5 text-gray-400" />
-                  <span>Pengaturan</span>
-                </Link>
+                  icon={<Settings className="w-5 h-5" />}
+                  title="Keamanan Akun"
+                  color="text-text-muted"
+                />
               </div>
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar Area */}
           <div className="space-y-6">
-            {/* Account Status */}
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Status Akun</h3>
+            {/* Account Status Card */}
+            <div className="bg-white/[0.02] border border-white/5 backdrop-blur-md rounded-[2rem] p-6">
+              <h3 className="text-sm font-black uppercase tracking-widest mb-6 text-text-muted">
+                Status Akun
+              </h3>
 
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">
-                    Verifikasi Email
-                  </span>
-                  <span className="text-green-500 text-sm font-medium">
-                    ✓ Terverifikasi
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Status Akun</span>
-                  <span className="text-green-500 text-sm font-medium">
-                    Aktif
-                  </span>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">Level</span>
-                  <span className="text-purple-500 text-sm font-medium">
-                    Premium
-                  </span>
-                </div>
+              <div className="space-y-4">
+                <StatusRow
+                  label="Verifikasi"
+                  value="Aktif"
+                  dotColor="bg-green-500"
+                />
+                <StatusRow
+                  label="Keamanan"
+                  value="Tinggi"
+                  dotColor="bg-accent"
+                />
+                <StatusRow
+                  label="Level"
+                  value="Premium"
+                  valueClass="text-secondary font-black"
+                />
               </div>
             </div>
 
             {/* Logout Button */}
-            <div className="bg-slate-900 border border-slate-800 rounded-lg p-6">
-              <button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="w-full flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
-              >
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="group w-full flex items-center justify-between bg-red-500/10 hover:bg-red-500 border border-red-500/20 text-red-500 hover:text-white p-5 rounded-2xl transition-all duration-300"
+            >
+              <div className="flex items-center space-x-3">
                 <LogOut className="w-5 h-5" />
-                <span>Keluar</span>
-              </button>
-            </div>
+                <span className="font-bold tracking-widest text-xs">
+                  KELUAR SESI
+                </span>
+              </div>
+              <ChevronRight className="w-4 h-4 opacity-50 group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// --- Komponen Pendukung ---
+
+function InfoItem({ icon, label, value, isHighlight = false }: any) {
+  return (
+    <div className="flex items-start space-x-4">
+      <div className="mt-1 text-text-muted opacity-40">{icon}</div>
+      <div>
+        <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-1">
+          {label}
+        </p>
+        <p
+          className={`font-medium ${isHighlight ? "text-secondary font-black" : "text-text-main"}`}
+        >
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ActionLink({ href, icon, title, color }: any) {
+  return (
+    <Link
+      href={href}
+      className="group flex items-center justify-between p-5 bg-white/[0.03] border border-white/5 hover:border-secondary/30 rounded-2xl transition-all duration-300 hover:scale-[1.02]"
+    >
+      <div className="flex items-center space-x-4">
+        <div className={`${color} group-hover:scale-110 transition-transform`}>
+          {icon}
+        </div>
+        <span className="font-bold text-sm tracking-tight">{title}</span>
+      </div>
+      <ChevronRight className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 transition-all" />
+    </Link>
+  );
+}
+
+function StatusRow({ label, value, dotColor, valueClass }: any) {
+  return (
+    <div className="flex justify-between items-center py-2">
+      <span className="text-xs text-text-muted font-medium">{label}</span>
+      <div className="flex items-center space-x-2">
+        {dotColor && (
+          <div
+            className={`w-1.5 h-1.5 rounded-full ${dotColor} animate-pulse`}
+          />
+        )}
+        <span className={`text-xs font-bold ${valueClass || "text-text-main"}`}>
+          {value}
+        </span>
       </div>
     </div>
   );

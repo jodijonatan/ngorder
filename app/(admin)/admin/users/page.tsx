@@ -8,14 +8,14 @@ import {
   User,
   Shield,
   Mail,
-  Calendar,
   Crown,
-  UserCheck,
-  UserX,
   Edit,
   Trash2,
   Plus,
   Search,
+  ArrowRight,
+  Loader2,
+  Fingerprint,
 } from "lucide-react";
 
 interface User {
@@ -41,12 +41,9 @@ export default function AdminUsersPage() {
       if (response.ok) {
         const data = await response.json();
         setUsers(data);
-      } else {
-        alert("Failed to fetch users");
       }
     } catch (error) {
       console.error("Error fetching users:", error);
-      alert("Error fetching users");
     } finally {
       setLoading(false);
     }
@@ -54,25 +51,18 @@ export default function AdminUsersPage() {
 
   const handleDelete = async (userId: string) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
-
     try {
       const response = await fetch(`/api/admin/users/${userId}`, {
         method: "DELETE",
       });
-
       if (response.ok) {
         setUsers(users.filter((user) => user.id !== userId));
-        alert("User deleted successfully");
-      } else {
-        alert("Failed to delete user");
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      alert("Error deleting user");
     }
   };
 
-  // Calculate statistics
   const totalUsers = users.length;
   const adminUsers = users.filter((u) => u.role === "ADMIN").length;
   const regularUsers = users.filter((u) => u.role === "USER").length;
@@ -80,221 +70,204 @@ export default function AdminUsersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#030712] text-slate-200 pb-20 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-secondary animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-200 pb-20">
-      {/* Decorative Glow */}
-      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-purple-600/5 blur-[120px] -z-10 pointer-events-none" />
+    <div className="min-h-screen bg-surface text-text-main pb-20 relative overflow-x-hidden">
+      {/* Ambience Glow */}
+      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-secondary/5 blur-[120px] -z-10 pointer-events-none" />
+      <div className="fixed bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 blur-[120px] -z-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 pt-12">
-        {/* Top Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <div className="flex items-center space-x-2 text-purple-400 mb-3">
-              <Users className="w-4 h-4" />
-              <span className="text-xs font-black uppercase tracking-[0.3em]">
-                User Management
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+          <div className="space-y-4">
+            <div className="flex items-center space-x-3 text-secondary group">
+              <div className="p-2 bg-secondary/10 rounded-lg group-hover:bg-secondary group-hover:text-surface transition-all">
+                <Fingerprint className="w-4 h-4" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.4em]">
+                Identity Access Management
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter">
-              USER <span className="text-slate-600 font-light">MANAGEMENT</span>
+            <h1 className="text-5xl md:text-6xl font-black tracking-tighter uppercase leading-none">
+              User <span className="text-text-muted font-light">Database</span>
             </h1>
           </div>
 
           <Link
             href="/admin/users/create"
-            className="group relative inline-flex items-center justify-center bg-white text-black font-black px-8 py-4 rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-white/5"
+            className="group relative inline-flex items-center justify-center bg-white text-black font-black px-10 py-5 rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-white/5"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <Plus className="relative w-5 h-5 mr-2 group-hover:text-white transition-colors" />
-            <span className="relative group-hover:text-white transition-colors">
-              TAMBAH USER
+            <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <Plus className="relative w-5 h-5 mr-3 group-hover:text-white transition-colors" />
+            <span className="relative group-hover:text-white transition-colors text-[10px] tracking-widest uppercase">
+              Register New Entity
             </span>
           </Link>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {/* Total Users */}
-          <div className="bg-white/[0.02] border border-white/5 p-6 rounded-[2rem] backdrop-blur-md relative overflow-hidden group">
-            <div className="absolute top-4 right-4 text-slate-800 group-hover:text-purple-500/20 transition-colors">
-              <Users className="w-12 h-12 transition-transform group-hover:scale-110" />
+        {/* Analytics Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {[
+            {
+              label: "Total Population",
+              val: totalUsers,
+              sub: "Entities",
+              icon: Users,
+              color: "text-secondary",
+            },
+            {
+              label: "Privileged",
+              val: adminUsers,
+              sub: "Admins",
+              icon: Crown,
+              color: "text-red-500",
+            },
+            {
+              label: "Standard",
+              val: regularUsers,
+              sub: "Users",
+              icon: User,
+              color: "text-blue-500",
+            },
+            {
+              label: "Total Activity",
+              val: totalOrders,
+              sub: "Transactions",
+              icon: Shield,
+              color: "text-accent",
+            },
+          ].map((stat, i) => (
+            <div
+              key={i}
+              className="bg-white/[0.02] border border-white/5 p-8 rounded-[2.5rem] relative overflow-hidden group hover:border-secondary/20 transition-all backdrop-blur-sm"
+            >
+              <stat.icon
+                className={`absolute -right-4 -top-4 w-24 h-24 opacity-[0.03] group-hover:opacity-[0.08] transition-all group-hover:scale-110 ${stat.color}`}
+              />
+              <p className="text-text-muted text-[10px] font-black uppercase tracking-[0.2em] mb-4 opacity-60">
+                {stat.label}
+              </p>
+              <h3 className="text-3xl font-black italic tracking-tighter">
+                {stat.val}{" "}
+                <span className="text-[10px] not-italic font-bold text-text-muted uppercase tracking-widest">
+                  {stat.sub}
+                </span>
+              </h3>
             </div>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">
-              Total Users
-            </p>
-            <h3 className="text-3xl font-black text-white italic">
-              {totalUsers}{" "}
-              <span className="text-sm font-normal not-italic text-slate-600">
-                Accounts
-              </span>
-            </h3>
-          </div>
-
-          {/* Admin Users */}
-          <div className="bg-white/[0.02] border border-white/5 p-6 rounded-[2rem] backdrop-blur-md relative overflow-hidden group">
-            <div className="absolute top-4 right-4 text-slate-800 group-hover:text-red-500/20 transition-colors">
-              <Crown className="w-12 h-12 transition-transform group-hover:scale-110" />
-            </div>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">
-              Admin Users
-            </p>
-            <h3 className="text-3xl font-black text-white italic">
-              {adminUsers}{" "}
-              <span className="text-sm font-normal not-italic text-slate-600">
-                Admins
-              </span>
-            </h3>
-          </div>
-
-          {/* Regular Users */}
-          <div className="bg-white/[0.02] border border-white/5 p-6 rounded-[2rem] backdrop-blur-md relative overflow-hidden group">
-            <div className="absolute top-4 right-4 text-slate-800 group-hover:text-blue-500/20 transition-colors">
-              <User className="w-12 h-12 transition-transform group-hover:scale-110" />
-            </div>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">
-              Regular Users
-            </p>
-            <h3 className="text-3xl font-black text-white italic">
-              {regularUsers}{" "}
-              <span className="text-sm font-normal not-italic text-slate-600">
-                Users
-              </span>
-            </h3>
-          </div>
-
-          {/* Total Orders */}
-          <div className="bg-white/[0.02] border border-white/5 p-6 rounded-[2rem] backdrop-blur-md relative overflow-hidden group">
-            <div className="absolute top-4 right-4 text-slate-800 group-hover:text-emerald-500/20 transition-colors">
-              <Shield className="w-12 h-12 transition-transform group-hover:scale-110" />
-            </div>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-1">
-              Total Orders
-            </p>
-            <h3 className="text-3xl font-black text-white italic">
-              {totalOrders}{" "}
-              <span className="text-sm font-normal not-italic text-slate-600">
-                Orders
-              </span>
-            </h3>
-          </div>
+          ))}
         </div>
 
-        {/* Search Bar */}
-        <div className="mb-8">
-          <div className="flex items-center bg-white/5 border border-white/5 px-4 py-3 rounded-xl group focus-within:border-purple-500/50 transition-all">
-            <Search className="w-4 h-4 text-slate-500 group-focus-within:text-purple-400" />
-            <input
-              type="text"
-              placeholder="Cari user berdasarkan nama atau email..."
-              className="bg-transparent border-none outline-none text-sm ml-3 text-white placeholder-slate-600 w-full"
-            />
+        {/* Search Field */}
+        <div className="relative mb-12">
+          <div className="absolute left-6 top-1/2 -translate-y-1/2">
+            <Search className="w-5 h-5 text-text-muted" />
           </div>
+          <input
+            type="text"
+            placeholder="Scan directory by name, email, or identity hash..."
+            className="w-full bg-white/[0.02] border border-white/5 pl-16 pr-8 py-6 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:bg-white/[0.05] transition-all placeholder:text-text-muted/30 font-medium"
+          />
         </div>
 
-        {/* Section Header */}
-        <div className="flex items-center justify-between mb-8 px-2">
-          <div className="flex items-center space-x-3">
-            <h2 className="text-xl font-bold text-white tracking-tight">
-              Daftar User
-            </h2>
-            <span className="bg-white/10 text-[10px] font-black px-2 py-1 rounded-md text-slate-400 uppercase tracking-tighter">
-              Live Database
-            </span>
-          </div>
-          <div className="h-[1px] flex-1 bg-white/5 mx-6 hidden md:block"></div>
+        {/* Section Divider */}
+        <div className="flex items-center mb-8 px-2 space-x-6">
+          <h2 className="text-xs font-black uppercase tracking-[0.3em] whitespace-nowrap">
+            Registered Identities
+          </h2>
+          <div className="h-[1px] w-full bg-gradient-to-r from-white/10 to-transparent" />
         </div>
 
-        {/* Users Grid */}
+        {/* Users Cards Grid */}
         <div className="relative">
           {users.length === 0 ? (
-            <div className="bg-white/[0.01] border border-dashed border-white/10 rounded-[3rem] py-32 text-center">
-              <div className="inline-flex p-6 bg-slate-900 rounded-full mb-6 border border-white/5">
-                <Users className="w-12 h-12 text-slate-700" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">
-                Belum Ada User
+            <div className="bg-white/[0.01] border-2 border-dashed border-white/5 rounded-[3rem] py-32 text-center">
+              <Users className="w-16 h-16 text-text-muted/20 mx-auto mb-6" />
+              <h3 className="text-xl font-bold opacity-50 uppercase tracking-tighter">
+                Directory Empty
               </h3>
-              <p className="text-slate-500 max-w-xs mx-auto text-sm">
-                Belum ada user yang terdaftar. Klik tombol tambah untuk membuat
-                akun baru.
-              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {users.map((user) => (
                 <div
                   key={user.id}
-                  className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-6 backdrop-blur-md hover:bg-white/[0.04] transition-all group"
+                  className="group bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-8 hover:bg-secondary/[0.02] hover:border-secondary/20 transition-all duration-500 backdrop-blur-md"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 border border-white/10 flex items-center justify-center font-bold text-sm">
-                        {user.name?.charAt(0).toUpperCase() ||
-                          user.email.charAt(0).toUpperCase()}
+                  <div className="flex items-start justify-between mb-8">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 flex items-center justify-center font-black text-xl text-secondary">
+                        {user.name?.charAt(0).toUpperCase() || "U"}
                       </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-white">
-                          {user.name || "Unnamed User"}
+                      <div className="max-w-[150px]">
+                        <h3 className="text-sm font-black tracking-widest uppercase truncate">
+                          {user.name || "Anonymous"}
                         </h3>
-                        <div className="flex items-center space-x-1">
-                          <Mail className="w-3 h-3 text-slate-500" />
-                          <span className="text-sm text-slate-500">
+                        <div className="flex items-center space-x-2 mt-1 opacity-50">
+                          <Mail className="w-3 h-3" />
+                          <span className="text-[10px] font-bold uppercase truncate">
                             {user.email}
                           </span>
                         </div>
                       </div>
                     </div>
                     <div
-                      className={`px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                      className={`px-3 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest border flex items-center space-x-2 ${
                         user.role === "ADMIN"
-                          ? "bg-red-500/20 text-red-400 border border-red-500/30"
-                          : "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                          ? "bg-red-500/10 text-red-500 border-red-500/20"
+                          : "bg-blue-500/10 text-blue-400 border-blue-500/20"
                       }`}
                     >
                       {user.role === "ADMIN" ? (
-                        <div className="flex items-center space-x-1">
-                          <Crown className="w-3 h-3" />
-                          <span>Admin</span>
-                        </div>
+                        <Crown className="w-3 h-3" />
                       ) : (
-                        <div className="flex items-center space-x-1">
-                          <User className="w-3 h-3" />
-                          <span>User</span>
-                        </div>
+                        <User className="w-3 h-3" />
                       )}
+                      <span>{user.role}</span>
                     </div>
                   </div>
 
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">Role</span>
-                      <span className="text-white font-semibold">
-                        {user.role}
+                  <div className="space-y-4 mb-8">
+                    <div className="flex justify-between items-end border-b border-white/5 pb-4">
+                      <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">
+                        Transactions
+                      </span>
+                      <span className="text-xl font-black text-secondary italic">
+                        {user.orderCount}{" "}
+                        <span className="text-[9px] not-italic text-text-muted">
+                          Total
+                        </span>
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">Status</span>
-                      <span className="text-white font-semibold">Active</span>
+                    <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
+                      <span className="text-text-muted">Access Level</span>
+                      <span className="text-text-main">
+                        {user.role === "ADMIN"
+                          ? "Full Protocol"
+                          : "Limited Access"}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex space-x-2">
+                  <div className="grid grid-cols-2 gap-3">
                     <Link
                       href={`/admin/users/${user.id}/edit`}
-                      className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center space-x-1"
+                      className="flex items-center justify-center space-x-2 bg-white/5 hover:bg-white/10 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
                     >
-                      <Edit className="w-4 h-4" />
-                      <span>Edit</span>
+                      <Edit className="w-3.5 h-3.5 text-secondary" />
+                      <span>Configure</span>
                     </Link>
-                    <button className="flex-1 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center space-x-1">
-                      <Trash2 className="w-4 h-4" />
-                      <span>Delete</span>
+                    <button
+                      onClick={() => handleDelete(user.id)}
+                      className="flex items-center justify-center space-x-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      <span>Purge</span>
                     </button>
                   </div>
                 </div>
@@ -303,23 +276,24 @@ export default function AdminUsersPage() {
           )}
         </div>
 
-        {/* Quick Tips/Footer */}
-        <div className="mt-16 flex flex-col md:flex-row items-center justify-between gap-4 p-8 bg-gradient-to-r from-purple-900/10 to-transparent rounded-[2rem] border border-white/5">
-          <div className="flex items-center space-x-4 text-center md:text-left">
-            <div className="p-3 bg-purple-500/20 rounded-xl">
-              <Shield className="w-5 h-5 text-purple-400" />
+        {/* System Info Footer */}
+        <div className="mt-20 p-10 bg-gradient-to-br from-white/[0.03] to-transparent rounded-[3rem] border border-white/5 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex items-center space-x-6">
+            <div className="w-14 h-14 bg-secondary/20 rounded-2xl flex items-center justify-center shadow-lg shadow-secondary/10">
+              <Shield className="w-7 h-7 text-secondary" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white">
-                Manajemen User Aman
+              <h4 className="text-lg font-black uppercase tracking-tighter italic text-text-main">
+                Access Enforcement
               </h4>
-              <p className="text-xs text-slate-500 uppercase tracking-wider">
-                Pastikan hanya admin yang dapat mengakses halaman ini.
+              <p className="text-[10px] text-text-muted font-bold uppercase tracking-[0.2em]">
+                All administrative actions are logged and encrypted
               </p>
             </div>
           </div>
-          <button className="text-[10px] font-black text-slate-400 hover:text-white transition-colors tracking-widest uppercase">
-            Export User Data
+          <button className="px-8 py-4 bg-text-main text-surface text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary transition-all flex items-center group">
+            Export Records
+            <ArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </div>

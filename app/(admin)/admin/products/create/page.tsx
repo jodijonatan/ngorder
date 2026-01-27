@@ -73,7 +73,6 @@ export default function CreateProductPage() {
       const slug = generateSlug(name);
       let imageUrl = null;
 
-      // Convert image to base64 if exists
       if (image) {
         imageUrl = imagePreview;
       }
@@ -105,21 +104,21 @@ export default function CreateProductPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] relative overflow-hidden pb-20">
-      {/* Background Ambience */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-purple-600/10 blur-[120px] rounded-full -z-10" />
-      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-pink-600/5 blur-[120px] rounded-full -z-10" />
+    <div className="min-h-screen bg-surface relative overflow-hidden pb-20">
+      {/* Background Ambience - Synchronized with theme */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-secondary/10 blur-[120px] rounded-full -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-accent/5 blur-[120px] rounded-full -z-10" />
 
       <div className="max-w-4xl mx-auto px-6 pt-12 relative z-10">
         {/* Breadcrumb & Navigation */}
         <Link
           href="/admin/products"
-          className="group inline-flex items-center text-slate-500 hover:text-white transition-all mb-8"
+          className="group inline-flex items-center text-text-muted hover:text-text-main transition-all mb-8"
         >
-          <div className="p-2 bg-white/5 rounded-lg mr-3 group-hover:bg-white/10 transition-colors">
+          <div className="p-2 bg-white/5 rounded-lg mr-3 group-hover:bg-secondary/20 group-hover:text-secondary transition-all">
             <ArrowLeft className="w-4 h-4" />
           </div>
-          <span className="text-sm font-bold uppercase tracking-widest">
+          <span className="text-[10px] font-black uppercase tracking-[0.2em]">
             Back to Inventory
           </span>
         </Link>
@@ -127,13 +126,13 @@ export default function CreateProductPage() {
         {/* Page Title */}
         <div className="mb-12">
           <div className="flex items-center space-x-3 mb-2">
-            <Sparkles className="w-5 h-5 text-purple-400" />
-            <span className="text-xs font-black text-purple-400 uppercase tracking-[0.4em]">
+            <Sparkles className="w-5 h-5 text-secondary" />
+            <span className="text-[10px] font-black text-secondary uppercase tracking-[0.4em]">
               New Collection
             </span>
           </div>
-          <h1 className="text-5xl font-black text-white tracking-tighter">
-            PUBLISH <span className="text-slate-600">PRODUCT</span>
+          <h1 className="text-5xl font-black text-text-main tracking-tighter uppercase">
+            Publish <span className="text-text-muted font-light">Product</span>
           </h1>
         </div>
 
@@ -143,26 +142,27 @@ export default function CreateProductPage() {
         >
           {/* Left Column: Media Upload */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-6 backdrop-blur-xl">
+            <div className="bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-6 backdrop-blur-xl">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center">
-                  <ImageIcon className="w-4 h-4 mr-2 text-purple-500" /> Media
+                <h3 className="text-[10px] font-black text-text-main uppercase tracking-[0.2em] flex items-center">
+                  <ImageIcon className="w-4 h-4 mr-2 text-secondary" /> Media
+                  Asset
                 </h3>
               </div>
 
               <div className="relative group">
                 {imagePreview ? (
-                  <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl">
+                  <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl group">
                     <img
                       src={imagePreview}
                       alt="Preview"
-                      className="w-full aspect-square object-cover"
+                      className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="absolute inset-0 bg-surface/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
                       <button
                         type="button"
                         onClick={removeImage}
-                        className="bg-red-500 hover:bg-red-600 text-white p-4 rounded-full transform scale-90 group-hover:scale-100 transition-all shadow-xl"
+                        className="bg-red-500 hover:bg-red-600 text-white p-4 rounded-full transform scale-90 group-hover:scale-100 transition-all shadow-xl shadow-red-500/20"
                       >
                         <X className="w-6 h-6" />
                       </button>
@@ -171,16 +171,16 @@ export default function CreateProductPage() {
                 ) : (
                   <label
                     htmlFor="image-upload"
-                    className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-white/10 rounded-[2rem] hover:bg-white/[0.02] hover:border-purple-500/50 transition-all cursor-pointer group"
+                    className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-white/5 rounded-[2rem] hover:bg-white/[0.03] hover:border-secondary/50 transition-all cursor-pointer group"
                   >
-                    <div className="p-5 bg-white/5 rounded-full mb-4 group-hover:scale-110 transition-transform">
-                      <Upload className="w-8 h-8 text-slate-400 group-hover:text-purple-400" />
+                    <div className="p-6 bg-white/5 rounded-full mb-4 group-hover:scale-110 group-hover:bg-secondary/10 transition-all">
+                      <Upload className="w-8 h-8 text-text-muted group-hover:text-secondary" />
                     </div>
-                    <p className="text-sm font-bold text-white uppercase tracking-tighter">
-                      Drop your image
+                    <p className="text-xs font-black text-text-main uppercase tracking-tighter">
+                      Drop Product Image
                     </p>
-                    <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-medium">
-                      Max size 5MB
+                    <p className="text-[9px] text-text-muted mt-2 uppercase tracking-widest font-bold opacity-50">
+                      High Quality Jpeg/Png • Max 5MB
                     </p>
                     <input
                       id="image-upload"
@@ -197,61 +197,63 @@ export default function CreateProductPage() {
 
           {/* Right Column: Details */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white/[0.02] border border-white/10 rounded-[2.5rem] p-8 backdrop-blur-xl space-y-6">
+            <div className="bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-8 backdrop-blur-xl space-y-8">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-xs font-bold animate-pulse uppercase tracking-tight">
-                  Error: {error}
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-[10px] font-black animate-pulse uppercase tracking-widest">
+                  ⚠️ Error: {error}
                 </div>
               )}
 
               {/* Product Name */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
-                  Product Name
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] ml-1">
+                  Information Title
                 </label>
                 <div className="relative group">
-                  <Package className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-purple-500 transition-colors" />
+                  <Package className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted group-focus-within:text-secondary transition-colors" />
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-black/40 border border-white/5 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
-                    placeholder="Minimalist Leather Jacket"
+                    className="w-full bg-black/20 border border-white/5 rounded-2xl pl-14 pr-6 py-5 text-text-main text-sm font-medium focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary/50 transition-all placeholder:text-text-muted/30"
+                    placeholder="Contoh: Premium Oversized Hoodie"
                   />
                 </div>
               </div>
 
               {/* Price & Stock Row */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] ml-1">
                     Price (IDR)
                   </label>
                   <div className="relative group">
-                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-purple-500 transition-colors" />
+                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-xs font-black text-text-muted group-focus-within:text-secondary">
+                      Rp
+                    </div>
                     <input
                       type="number"
                       required
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
-                      className="w-full bg-black/40 border border-white/5 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
+                      className="w-full bg-black/20 border border-white/5 rounded-2xl pl-14 pr-6 py-5 text-text-main text-sm font-black focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary/50 transition-all"
                       placeholder="0"
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] ml-1">
                     Inventory
                   </label>
                   <div className="relative group">
-                    <Hash className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 group-focus-within:text-purple-500 transition-colors" />
+                    <Hash className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted group-focus-within:text-secondary transition-colors" />
                     <input
                       type="number"
                       required
                       value={stock}
                       onChange={(e) => setStock(e.target.value)}
-                      className="w-full bg-black/40 border border-white/5 rounded-2xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all"
+                      className="w-full bg-black/20 border border-white/5 rounded-2xl pl-14 pr-6 py-5 text-text-main text-sm font-black focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary/50 transition-all"
                       placeholder="0"
                     />
                   </div>
@@ -259,44 +261,44 @@ export default function CreateProductPage() {
               </div>
 
               {/* Description */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">
-                  Full Description
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] ml-1">
+                  Product Narration
                 </label>
                 <div className="relative group">
-                  <FileText className="absolute left-4 top-5 w-5 h-5 text-slate-600 group-focus-within:text-purple-500 transition-colors" />
+                  <FileText className="absolute left-5 top-6 w-5 h-5 text-text-muted group-focus-within:text-secondary transition-colors" />
                   <textarea
-                    rows={5}
+                    rows={6}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full bg-black/40 border border-white/5 rounded-3xl pl-12 pr-4 py-4 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/40 transition-all resize-none"
-                    placeholder="Tell the story about this product..."
+                    className="w-full bg-black/20 border border-white/5 rounded-[2rem] pl-14 pr-6 py-6 text-text-main text-sm font-medium focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary/50 transition-all resize-none placeholder:text-text-muted/30"
+                    placeholder="Jelaskan detail material, ukuran, dan keunggulan produk..."
                   />
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="flex space-x-4 pt-4">
+              <div className="flex items-center space-x-4 pt-6">
                 <Link
                   href="/admin/products"
-                  className="flex-1 px-6 py-5 rounded-2xl bg-white/5 text-slate-400 font-bold text-xs uppercase tracking-widest text-center hover:bg-white/10 transition-all"
+                  className="flex-1 px-6 py-5 rounded-2xl bg-white/5 text-text-muted font-black text-[10px] uppercase tracking-[0.2em] text-center hover:bg-white/10 hover:text-text-main transition-all border border-white/5"
                 >
                   Discard
                 </Link>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="flex-[2] relative group overflow-hidden bg-white text-black font-black py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+                  className="flex-[2] relative group overflow-hidden bg-accent text-white font-black py-5 rounded-2xl transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 shadow-xl shadow-accent/20"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="relative flex items-center justify-center space-x-2 group-hover:text-white transition-colors">
+                  <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative flex items-center justify-center space-x-3">
                     {saving ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
                       <>
-                        <Save className="w-5 h-5" />
-                        <span className="text-xs uppercase tracking-widest">
-                          Publish Product
+                        <Save className="w-4 h-4" />
+                        <span className="text-[10px] uppercase tracking-[0.2em]">
+                          Publish to Store
                         </span>
                       </>
                     )}

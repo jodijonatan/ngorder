@@ -9,18 +9,17 @@ export default function RedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "loading") return; // Still loading
+    if (status === "loading") return;
 
     if (session?.user) {
-      // Check user role and redirect accordingly
+      // Gunakan router.replace agar tidak bisa di-"back" ke halaman loading ini
       if (session.user.role === "admin") {
-        router.push("/admin");
+        router.replace("/admin");
       } else {
-        router.push("/");
+        router.replace("/shop");
       }
-    } else {
-      // No session, redirect to login
-      router.push("/login");
+    } else if (status === "unauthenticated") {
+      router.replace("/login");
     }
   }, [session, status, router]);
 
@@ -28,7 +27,7 @@ export default function RedirectPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#030712]">
       <div className="text-white text-center">
         <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p>Mengalihkan...</p>
+        <p>Sedang mengalihkan Anda...</p>
       </div>
     </div>
   );

@@ -12,8 +12,7 @@ import {
   LogOut,
   Menu,
   X,
-  Bell,
-  Search,
+  ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -38,23 +37,31 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] flex">
+    <div className="min-h-screen bg-surface flex overflow-hidden">
       {/* --- SIDEBAR --- */}
       <aside
         className={`
-        fixed inset-y-0 left-0 z-50 w-72 bg-[#09090b] border-r border-white/5 transform transition-transform duration-300 lg:relative lg:translate-x-0
-        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-      `}
+          fixed inset-y-0 left-0 z-50 w-72 bg-surface/50 backdrop-blur-2xl border-r border-white/5 transform transition-all duration-500 lg:relative lg:translate-x-0
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
       >
-        <div className="flex flex-col h-full p-6">
+        <div className="flex flex-col h-full p-8">
           {/* Brand Logo */}
-          <div className="flex items-center space-x-3 px-2 mb-10">
-            <div className="w-10 h-10 bg-gradient-to-tr from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
-              <Package className="text-white w-6 h-6" />
+          <div className="flex items-center space-x-3 px-2 mb-12">
+            <div className="relative">
+              <div className="absolute -inset-1 bg-gradient-to-tr from-secondary to-accent rounded-xl blur-sm opacity-50"></div>
+              <div className="relative w-10 h-10 bg-surface border border-white/10 rounded-xl flex items-center justify-center">
+                <Package className="text-secondary w-5 h-5" />
+              </div>
             </div>
-            <span className="text-xl font-black text-white tracking-tighter">
-              NGORDER <span className="text-slate-500">CMS</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="text-xl font-black text-text-main tracking-tighter leading-none">
+                NGORDER
+              </span>
+              <span className="text-[10px] font-bold text-secondary uppercase tracking-[0.3em] mt-1">
+                Admin Console
+              </span>
+            </div>
           </div>
 
           {/* Navigation Items */}
@@ -65,19 +72,28 @@ export default function AdminLayout({
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={() => setIsSidebarOpen(false)}
                   className={`
-                    flex items-center space-x-3 px-4 py-3 rounded-2xl transition-all duration-200 group
+                    flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all duration-300 group
                     ${
                       isActive
-                        ? "bg-white text-black font-bold shadow-xl shadow-white/5"
-                        : "text-slate-500 hover:text-white hover:bg-white/5"
+                        ? "bg-secondary text-white font-bold shadow-lg shadow-secondary/20"
+                        : "text-text-muted hover:text-text-main hover:bg-white/[0.03]"
                     }
                   `}
                 >
-                  <item.icon
-                    className={`w-5 h-5 ${isActive ? "text-black" : "text-slate-500 group-hover:text-purple-400"}`}
-                  />
-                  <span className="text-sm tracking-wide">{item.name}</span>
+                  <div className="flex items-center space-x-3">
+                    <item.icon
+                      className={`w-5 h-5 transition-transform duration-300 group-hover:scale-110 
+                      ${isActive ? "text-white" : "text-text-muted group-hover:text-accent"}`}
+                    />
+                    <span className="text-sm font-medium tracking-tight">
+                      {item.name}
+                    </span>
+                  </div>
+                  {isActive && (
+                    <ChevronRight className="w-4 h-4 text-white/50" />
+                  )}
                 </Link>
               );
             })}
@@ -87,44 +103,50 @@ export default function AdminLayout({
           <div className="mt-auto pt-6 border-t border-white/5">
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-3 px-4 py-3 w-full text-slate-500 hover:text-red-400 transition-colors group"
+              className="flex items-center justify-between px-4 py-4 w-full bg-red-500/5 hover:bg-red-500 text-red-500 hover:text-white rounded-2xl transition-all duration-300 group border border-red-500/10"
             >
-              <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-sm font-bold uppercase tracking-widest text-[10px]">
-                Sign Out
-              </span>
+              <div className="flex items-center space-x-3">
+                <LogOut className="w-4 h-4" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">
+                  Keluar Sesi
+                </span>
+              </div>
             </button>
           </div>
         </div>
       </aside>
 
       {/* --- MAIN CONTENT AREA --- */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Top Navbar for Mobile */}
+        <header className="lg:hidden flex items-center justify-between p-6 bg-surface/50 backdrop-blur-md border-b border-white/5">
+          <span className="text-lg font-black text-text-main tracking-tighter uppercase">
+            NG<span className="text-secondary">ORDER</span>
+          </span>
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="p-3 bg-white/[0.03] border border-white/10 rounded-xl text-text-muted hover:text-text-main transition-all"
+          >
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </header>
+
         {/* Content Body */}
-        <main className="flex-1 overflow-y-auto relative">
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden p-4">
-            <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2 text-slate-400 hover:text-white transition-colors"
-            >
-              {isSidebarOpen ? <X /> : <Menu />}
-            </button>
-          </div>
+        <main className="flex-1 overflow-y-auto relative custom-scrollbar">
+          {/* Subtle Decorative Elements */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary/5 blur-[120px] rounded-full -z-10" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 blur-[120px] rounded-full -z-10" />
 
-          {/* Subtle Page Background Decor */}
-          <div className="absolute top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden">
-            <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-purple-600/5 blur-[100px] rounded-full"></div>
+          <div className="p-6 md:p-12 lg:p-16 max-w-[1400px] mx-auto">
+            {children}
           </div>
-
-          <div className="p-6 md:p-10 max-w-[1600px] mx-auto">{children}</div>
         </main>
       </div>
 
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-surface/80 backdrop-blur-sm z-40 lg:hidden transition-all duration-500"
           onClick={() => setIsSidebarOpen(false)}
         ></div>
       )}

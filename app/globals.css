@@ -1,5 +1,33 @@
 @import "tailwindcss";
 
+@theme {
+  /* Brand Colors */
+  --color-primary: #1a237e; /* Navy: Profesional & Terpercaya */
+  --color-secondary: #2962ff; /* Blue: Modern */
+  --color-accent: #ff6d00; /* Orange: Untuk Tombol CTA/Beli */
+
+  /* Neutral Colors */
+  --color-surface: #f5f7fa; /* Background halaman */
+  --color-text-main: #1a1a1a; /* Warna teks utama */
+  --color-text-muted: #6b7280; /* Warna teks sekunder/deskripsi */
+}
+
 body {
   height: 100%;
+  background-color: var(--color-surface);
+  color: var(--color-text-main);
+  font-family: sans-serif; /* Opsional: sesuaikan dengan font pilihan Anda */
+}
+
+/* Contoh utility class kustom jika diperlukan */
+.btn-primary {
+  background-color: var(--color-accent);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
 }

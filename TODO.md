@@ -1,14 +1,11 @@
-# TODO: Fix Admin Product CRUD
+# Color Template Implementation Plan
 
-- [x] Create dynamic API route for individual products (/api/admin/products/[id]/route.ts)
-- [x] Update admin products list page with modern design
-- [x] Update create product page with modern design and image upload
-- [x] Update edit product page with modern design and image upload
-- [x] Add proper error handling and loading states
-- [x] Add slug generation for products
-- [x] Fix delete functionality
-- [x] Add confirmation dialogs for delete operations
-- [x] Add success/error notifications
-- [x] Create image upload API route (/api/upload/route.ts)
-- [ ] Test all CRUD operations
-- [ ] Run lint and build to verify everything works
+## Tasks
+
+- [ ] Update app/layout.tsx to use CSS variables for body background and text colors
+- [ ] Update components/Navbar.tsx to replace hardcoded colors with CSS variables
+- [ ] Update app/(auth)/login/page.tsx to use CSS variables for backgrounds and text
+- [ ] Update components/Footer.tsx to use CSS variables for gradients and text colors
+- [ ] Add additional CSS variables in app/globals.css if needed for better consistency
+- [ ] Test the application to ensure color consistency across pages
+- [ ] Verify that the color scheme matches the intended design
