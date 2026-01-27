@@ -1,31 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand Colors - Modern Tech Aesthetic */
-  --color-primary: #0f172a; /* Slate 900: Sangat profesional dan solid */
-  --color-secondary: #6366f1; /* Indigo 500: Modern, sering digunakan di SaaS */
-  --color-accent: #f59e0b; /* Amber 500: Lebih elegan daripada orange standar untuk CTA */
+  /* Fresh & Professional Emerald Theme */
+  --color-primary: #064e3b; /* Emerald 900: Deep & Premium */
+  --color-secondary: #10b981; /* Emerald 500: Vibrant & Modern */
+  --color-accent: #f59e0b; /* Amber 500: Perfect for CTA */
 
-  /* Neutral Colors */
-  --color-surface: #f8fafc; /* Slate 50: Background yang sangat bersih, tidak melelahkan mata */
-  --color-text-main: #1e293b; /* Slate 800: Hitam yang lembut (soft black) */
-  --color-text-muted: #64748b; /* Slate 500: Abu-abu kebiruan untuk teks sekunder */
-
-  /* Additional: Border & Divider */
-  --color-border: #e2e8f0; /* Slate 200: Untuk garis pemisah yang halus */
+  /* Neutral Surface */
+  --color-surface: #fdfdfd; /* White with a hint of grey */
+  --color-text-main: #0f172a; /* Slate 900 */
+  --color-text-muted: #64748b; /* Slate 500 */
+  --color-border: #f1f5f9; /* Slate 100 */
 }
 
 body {
-  height: 100%;
   background-color: var(--color-surface);
   color: var(--color-text-main);
-  /* Font modern: Inter atau Geist sangat disarankan */
-  font-family:
-    "Inter",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
+  font-family: "Inter", sans-serif;
 }
 
 /* Custom Utility dengan sentuhan modern */

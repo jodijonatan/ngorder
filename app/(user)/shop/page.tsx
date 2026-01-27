@@ -88,19 +88,19 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen bg-transparent pb-20">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-6 pt-10">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <div className="flex items-center space-x-2 text-purple-400 mb-2">
+            <div className="flex items-center space-x-2 text-emerald-600 mb-2">
               <Sparkles className="w-4 h-4" />
               <span className="text-xs font-bold uppercase tracking-widest">
                 Katalog Eksklusif
               </span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter">
+            <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
               EXPLORE{" "}
-              <span className="text-slate-500 text-3xl md:text-4xl font-light">
+              <span className="text-slate-300 text-3xl md:text-4xl font-light">
                 /
               </span>{" "}
               SHOP
@@ -110,25 +110,25 @@ export default function ShopPage() {
           {/* Search & Filter Bar */}
           <div className="flex items-center gap-3 w-full md:w-auto">
             <div className="relative flex-1 md:w-80 group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-purple-400 transition-colors w-4 h-4" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors w-4 h-4" />
               <input
                 type="text"
                 placeholder="Cari produk impian..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:bg-white/[0.06] transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all shadow-sm"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
                   <X className="w-4 h-4" />
                 </button>
               )}
             </div>
-            <button className="p-3.5 bg-white/[0.03] border border-white/10 rounded-2xl hover:bg-white/10 transition-all">
-              <SlidersHorizontal className="w-5 h-5 text-slate-300" />
+            <button className="p-3.5 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition-all shadow-sm">
+              <SlidersHorizontal className="w-5 h-5 text-slate-600" />
             </button>
           </div>
         </div>
@@ -137,26 +137,25 @@ export default function ShopPage() {
         <div className="mb-8 flex items-center justify-between">
           <p className="text-sm text-slate-500">
             Menampilkan{" "}
-            <span className="text-slate-200 font-medium">
+            <span className="text-emerald-600 font-bold">
               {filteredProducts.length}
             </span>{" "}
-            produk
+            produk terbaik
           </p>
-          <div className="h-[1px] flex-1 bg-white/5 mx-6 hidden md:block"></div>
+          <div className="h-[1px] flex-1 bg-slate-100 mx-6 hidden md:block"></div>
         </div>
 
         {/* Products Grid */}
         {filteredProducts.length === 0 ? (
-          <div className="text-center py-24 bg-white/[0.02] rounded-[2.5rem] border border-dashed border-white/10">
-            <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/5">
-              <ShoppingBag className="text-slate-600 w-8 h-8" />
+          <div className="text-center py-24 bg-slate-50 rounded-[2.5rem] border border-dashed border-slate-200">
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+              <ShoppingBag className="text-slate-300 w-8 h-8" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">
+            <h3 className="text-xl font-bold text-slate-900 mb-2">
               Produk Tidak Ditemukan
             </h3>
             <p className="text-slate-500 max-w-xs mx-auto">
-              Maaf, kami tidak dapat menemukan produk "{searchQuery}". Coba kata
-              kunci lain.
+              Maaf, kami tidak dapat menemukan "{searchQuery}".
             </p>
           </div>
         ) : (
@@ -164,36 +163,36 @@ export default function ShopPage() {
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
-                className="group relative flex flex-col bg-white/[0.02] border border-white/5 rounded-[2rem] p-4 hover:bg-white/[0.05] hover:border-white/10 transition-all duration-500"
+                className="group relative flex flex-col bg-white border border-slate-100 rounded-[2rem] p-4 hover:shadow-2xl hover:shadow-emerald-500/10 hover:-translate-y-1 transition-all duration-500"
               >
-                {/* Product Card wrapper (Image & Badge) */}
-                <div className="relative mb-4 rounded-[1.5rem] overflow-hidden bg-slate-900/50">
+                {/* Product Card wrapper */}
+                <div className="relative mb-4 rounded-[1.5rem] overflow-hidden bg-slate-50">
                   <ProductCard product={product} />
 
-                  {/* Overlay Action on Hover */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                  {/* Overlay Action */}
+                  <div className="absolute inset-0 bg-emerald-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
                     <button
                       onClick={() => handleAddToCart(product)}
-                      className="bg-white text-black px-6 py-3 rounded-xl font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:scale-105 active:scale-95"
+                      className="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 hover:bg-emerald-700 shadow-lg"
                     >
-                      Quick Add +
+                      Beli Sekarang +
                     </button>
                   </div>
                 </div>
 
                 {/* Info & Price */}
                 <div className="px-2 pb-2">
-                  <div className="flex justify-between items-center gap-2">
-                    <h3 className="font-bold text-slate-200 truncate group-hover:text-purple-400 transition-colors">
-                      {product.name}
-                    </h3>
-                    <span className="text-sm font-black text-white shrink-0">
+                  <h3 className="font-bold text-slate-800 truncate group-hover:text-emerald-600 transition-colors">
+                    {product.name}
+                  </h3>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-lg font-black text-emerald-700">
                       Rp{product.price.toLocaleString("id-ID")}
                     </span>
+                    <span className="text-[10px] px-2 py-1 bg-slate-100 text-slate-500 rounded-full font-bold uppercase">
+                      Stock: {product.stock}
+                    </span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-1 italic">
-                    Ready Stock: {product.stock}
-                  </p>
                 </div>
               </div>
             ))}
