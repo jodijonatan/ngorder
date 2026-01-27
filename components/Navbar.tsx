@@ -89,27 +89,27 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Navigation (Center) */}
-          <div className="hidden md:flex items-center bg-white/5 border border-white/10 px-6 py-2 rounded-full backdrop-blur-lg">
-            <div className="flex items-center space-x-8">
-              <NavLink
-                href="/"
-                icon={<Home className="w-4 h-4" />}
-                label="Home"
-              />
-              <NavLink
-                href="/shop"
-                icon={<Store className="w-4 h-4" />}
-                label="Shop"
-              />
-              {session?.user?.role === "ADMIN" && (
+          {session?.user?.role === "ADMIN" && (
+            <div className="hidden md:flex items-center bg-white/5 border border-white/10 px-6 py-2 rounded-full backdrop-blur-lg">
+              <div className="flex items-center space-x-8">
+                <NavLink
+                  href="/"
+                  icon={<Home className="w-4 h-4" />}
+                  label="Home"
+                />
+                <NavLink
+                  href="/shop"
+                  icon={<Store className="w-4 h-4" />}
+                  label="Shop"
+                />
                 <NavLink
                   href="/admin"
                   icon={<Settings className="w-4 h-4" />}
                   label="Admin"
                 />
-              )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Action Icons (Right) */}
           <div className="flex items-center space-x-2">
@@ -220,7 +220,7 @@ export default function Navbar() {
         className={`fixed inset-0 bg-slate-950 z-[-1] transition-transform duration-500 md:hidden ${isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
       >
         <div className="flex flex-col items-center justify-center h-full space-y-8 text-2xl font-medium">
-          {session && (
+          {session?.user?.role === "ADMIN" && (
             <>
               <Link href="/" onClick={() => setIsMenuOpen(false)}>
                 Home
