@@ -220,7 +220,7 @@ export default async function AdminOrdersPage() {
                   <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest">
                     <span className="text-text-muted">Timestamp</span>
                     <span>
-                      {new Date(order.createdAt).toLocaleDateString("id-ID")}
+                      {new Date(order.id).toLocaleDateString("id-ID")}
                     </span>
                   </div>
                 </div>
