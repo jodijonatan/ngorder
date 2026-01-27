@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useCart } from "@/store/cart";
 import {
-  Search,
   ShoppingCart,
   User,
   Menu,
@@ -113,11 +112,6 @@ export default function Navbar() {
 
           {/* Action Icons (Right) */}
           <div className="flex items-center space-x-2">
-            {/* Search Glass Button */}
-            <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-all">
-              <Search className="w-5 h-5" />
-            </button>
-
             {/* Cart with Badge */}
             {session?.user?.role !== "ADMIN" && (
               <Link
