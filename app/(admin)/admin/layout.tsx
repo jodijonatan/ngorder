@@ -34,7 +34,7 @@ export default function AdminLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = async () => {
-    await signOut({ callbackUrl: "/login" });
+    await signOut({ callbackUrl: "/" });
   };
 
   return (

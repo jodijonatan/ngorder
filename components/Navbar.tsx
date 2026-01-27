@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useCart } from "@/store/cart";
 import {
@@ -23,8 +24,10 @@ import {
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: session } = useSession();
   const { items } = useCart();
+  const router = useRouter();
 
   const cartItemCount = items.reduce(
     (total: number, item: { qty: number }) => total + item.qty,
@@ -39,6 +42,28 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isDropdownOpen && !(event.target as Element).closest(".relative")) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isDropdownOpen]);
+
+  // Redirect after login
+  useEffect(() => {
+    if (session?.user) {
+      if (session.user.role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/shop");
+      }
+    }
+  }, [session, router]);
 
   return (
     <nav
@@ -114,18 +139,25 @@ export default function Navbar() {
             <div className="h-6 w-[1px] bg-white/10 mx-2 hidden sm:block"></div>
 
             {/* User Profile / Auth */}
-            <div className="relative group">
+            <div className="relative">
               {session ? (
                 <>
-                  <button className="flex items-center space-x-2 p-1 pl-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all">
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center space-x-2 p-1 pl-2 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all"
+                  >
                     <div className="w-7 h-7 bg-gradient-to-tr from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white uppercase">
                       {session.user?.name?.substring(0, 2)}
                     </div>
-                    <ChevronDown className="w-4 h-4 text-gray-400 group-hover:rotate-180 transition-transform duration-300" />
+                    <ChevronDown
+                      className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
+                    />
                   </button>
 
                   {/* Dropdown Menu */}
-                  <div className="absolute right-0 top-full mt-2 w-56 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 z-50">
+                  <div
+                    className={`absolute right-0 top-full mt-2 w-56 transition-all duration-200 z-50 ${isDropdownOpen ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-2 pointer-events-none"}`}
+                  >
                     <div className="bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden p-2">
                       <div className="px-4 py-3 border-b border-white/5 mb-1">
                         <p className="text-xs text-gray-400">Signed in as</p>
@@ -137,14 +169,19 @@ export default function Navbar() {
                         href="/profile"
                         icon={<User className="w-4 h-4" />}
                         label="Profile"
+                        onClick={() => setIsDropdownOpen(false)}
                       />
                       <DropdownItem
                         href="/favorites"
                         icon={<Heart className="w-4 h-4" />}
                         label="Wishlist"
+                        onClick={() => setIsDropdownOpen(false)}
                       />
                       <button
-                        onClick={() => signOut()}
+                        onClick={() => {
+                          setIsDropdownOpen(false);
+                          signOut({ callbackUrl: "/" });
+                        }}
                         className="w-full flex items-center space-x-2 px-3 py-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors text-sm"
                       >
                         <LogOut className="w-4 h-4" />
@@ -183,15 +220,21 @@ export default function Navbar() {
         className={`fixed inset-0 bg-slate-950 z-[-1] transition-transform duration-500 md:hidden ${isMenuOpen ? "translate-y-0" : "-translate-y-full"}`}
       >
         <div className="flex flex-col items-center justify-center h-full space-y-8 text-2xl font-medium">
-          <Link href="/" onClick={() => setIsMenuOpen(false)}>
-            Home
-          </Link>
-          <Link href="/shop" onClick={() => setIsMenuOpen(false)}>
-            Shop
-          </Link>
-          <Link href="/cart" onClick={() => setIsMenuOpen(false)}>
-            Cart ({cartItemCount})
-          </Link>
+          {session && (
+            <>
+              <Link href="/" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
+              <Link href="/shop" onClick={() => setIsMenuOpen(false)}>
+                Shop
+              </Link>
+            </>
+          )}
+          {session?.user?.role !== "ADMIN" && (
+            <Link href="/cart" onClick={() => setIsMenuOpen(false)}>
+              Cart ({cartItemCount})
+            </Link>
+          )}
           {session ? (
             <button onClick={() => signOut()} className="text-red-500">
               Sign Out
@@ -234,14 +277,17 @@ function DropdownItem({
   href,
   icon,
   label,
+  onClick,
 }: {
   href: string;
   icon: React.ReactNode;
   label: string;
+  onClick?: () => void;
 }) {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white rounded-lg transition-colors"
     >
       {icon}
