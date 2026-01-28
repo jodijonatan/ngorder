@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { LayoutGrid, ArrowUpRight } from "lucide-react";
+import { LayoutGrid, ArrowUpRight, Heart } from "lucide-react";
 
 interface Product {
   id: string;
@@ -12,9 +12,32 @@ interface Product {
   description: string;
 }
 
-export default function ProductCard({ product }: { product: Product }) {
+// Tambahkan definisi Props
+interface ProductCardProps {
+  product: Product;
+  isFavorite: boolean;
+  onToggleFavorite: (e: React.MouseEvent, id: string) => void;
+}
+
+export default function ProductCard({
+  product,
+  isFavorite,
+  onToggleFavorite,
+}: ProductCardProps) {
   return (
-    <div className="group block w-full">
+    <div className="group block w-full relative">
+      {/* Tombol Wishlist - Sekarang di dalam Komponen Card */}
+      <button
+        onClick={(e) => onToggleFavorite(e, product.id)}
+        className="absolute top-3 right-3 z-20 p-2 bg-white/80 backdrop-blur-md rounded-xl shadow-sm border border-slate-50 hover:scale-110 active:scale-90 transition-all"
+      >
+        <Heart
+          className={`w-4 h-4 transition-colors ${
+            isFavorite ? "text-red-500 fill-red-500" : "text-slate-300"
+          }`}
+        />
+      </button>
+
       {/* Image Container - Link ke Detail */}
       <Link
         href={`/product/${product.slug}`}
@@ -47,10 +70,10 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
 
-        {/* View Detail Icon */}
-        <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-          <div className="bg-white/90 p-2 rounded-lg shadow-sm">
-            <ArrowUpRight className="w-4 h-4 text-slate-900" />
+        {/* View Detail Icon (Hanya muncul saat hover container, tapi tidak menutupi Heart) */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none">
+          <div className="bg-white/90 p-3 rounded-2xl shadow-xl transform scale-75 group-hover:scale-100 transition-transform">
+            <ArrowUpRight className="w-5 h-5 text-slate-900" />
           </div>
         </div>
       </Link>
