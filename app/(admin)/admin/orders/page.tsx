@@ -258,7 +258,7 @@ export default async function AdminOrdersPage() {
               </p>
             </div>
           </div>
-          <button className="px-8 py-4 bg-text-main text-surface text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary transition-all flex items-center group">
+          <button className="px-8 py-4 bg-text-main text-surface text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary transition-all flex items-center group cursor-pointer">
             Download CSV
             <ArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
           </button>

@@ -114,7 +114,7 @@ export default function CartPage() {
                   <div className="flex items-center space-x-6 bg-white/[0.03] p-2 rounded-2xl border border-white/5">
                     <button
                       onClick={() => updateQuantity(item.id, item.qty - 1)}
-                      className="w-10 h-10 bg-white/5 hover:bg-secondary hover:text-surface rounded-xl flex items-center justify-center transition-all active:scale-90"
+                      className="w-10 h-10 bg-white/5 hover:bg-secondary hover:text-surface rounded-xl flex items-center justify-center transition-all active:scale-90 cursor-pointer"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
@@ -125,7 +125,7 @@ export default function CartPage() {
 
                     <button
                       onClick={() => updateQuantity(item.id, item.qty + 1)}
-                      className="w-10 h-10 bg-white/5 hover:bg-secondary hover:text-surface rounded-xl flex items-center justify-center transition-all active:scale-90"
+                      className="w-10 h-10 bg-white/5 hover:bg-secondary hover:text-surface rounded-xl flex items-center justify-center transition-all active:scale-90 cursor-pointer"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -139,7 +139,7 @@ export default function CartPage() {
 
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="p-4 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300 group/trash"
+                    className="p-4 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300 group/trash cursor-pointer"
                   >
                     <Trash2 className="w-5 h-5 group-hover/trash:rotate-12" />
                   </button>
@@ -182,12 +182,17 @@ export default function CartPage() {
               </div>
 
               <div className="space-y-3">
-                <button className="group relative w-full bg-text-main text-surface font-black py-5 rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center space-x-3">
-                  <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <CreditCard className="relative w-5 h-5 group-hover:text-white transition-colors" />
-                  <span className="relative group-hover:text-white transition-colors uppercase tracking-[0.2em] text-[10px]">
-                    Secure Checkout
-                  </span>
+                <button className="group relative w-full overflow-hidden rounded-2xl bg-text-main py-5 font-bold text-surface transition-all hover:scale-[1.02] active:scale-95 cursor-pointer">
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+                  {/* Content Container */}
+                  <div className="relative flex items-center justify-center space-x-3">
+                    <CreditCard className="h-5 w-5 transition-colors group-hover:text-white" />
+                    <span className="text-[11px] uppercase tracking-[0.15em] transition-colors group-hover:text-white">
+                      Secure Checkout
+                    </span>
+                  </div>
                 </button>
 
                 <Link

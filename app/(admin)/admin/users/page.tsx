@@ -264,7 +264,7 @@ export default function AdminUsersPage() {
                     </Link>
                     <button
                       onClick={() => handleDelete(user.id)}
-                      className="flex items-center justify-center space-x-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+                      className="flex items-center justify-center space-x-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span>Purge</span>
@@ -291,7 +291,7 @@ export default function AdminUsersPage() {
               </p>
             </div>
           </div>
-          <button className="px-8 py-4 bg-text-main text-surface text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary transition-all flex items-center group">
+          <button className="px-8 py-4 bg-text-main text-surface text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl hover:bg-secondary transition-all flex items-center group cursor-pointer">
             Export Records
             <ArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
           </button>

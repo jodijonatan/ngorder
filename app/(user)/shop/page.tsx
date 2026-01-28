@@ -165,7 +165,7 @@ export default function ShopPage() {
                   <div className="absolute inset-0 bg-emerald-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex items-center justify-center backdrop-blur-[2px]">
                     <button
                       onClick={() => handleAddToCart(product)}
-                      className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-xs hover:bg-emerald-700 shadow-lg transition-transform hover:scale-105"
+                      className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold text-xs hover:bg-emerald-700 shadow-lg transition-transform hover:scale-105 cursor-pointer"
                     >
                       Beli +
                     </button>

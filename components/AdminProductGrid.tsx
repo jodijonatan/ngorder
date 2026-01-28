@@ -138,7 +138,7 @@ export default function AdminProductGrid({ products }: AdminProductGridProps) {
               </Link>
               <button
                 onClick={() => handleDelete(product.id)}
-                className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white p-3 rounded-xl transition-all duration-300"
+                className="bg-red-500/10 cursor-pointer hover:bg-red-500 text-red-500 hover:text-white p-3 rounded-xl transition-all duration-300"
                 title="Decommission Unit"
               >
                 <Trash2 className="w-4 h-4" />

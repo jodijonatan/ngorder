@@ -103,7 +103,7 @@ export default function AdminLayout({
           <div className="mt-auto pt-6 border-t border-white/5">
             <button
               onClick={handleLogout}
-              className="flex items-center justify-between px-4 py-4 w-full bg-red-500/5 hover:bg-red-500 text-red-500 hover:text-white rounded-2xl transition-all duration-300 group border border-red-500/10"
+              className="flex items-center justify-between px-4 py-4 w-full bg-red-500/5 hover:bg-red-500 text-red-500 hover:text-white rounded-2xl transition-all duration-300 group border border-red-500/10 cursor-pointer"
             >
               <div className="flex items-center space-x-3">
                 <LogOut className="w-4 h-4" />

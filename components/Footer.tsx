@@ -52,7 +52,7 @@ export default function Footer() {
                     placeholder="Enter your email"
                     className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent/40 transition-all"
                   />
-                  <button className="bg-accent hover:opacity-90 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-accent/25">
+                  <button className="bg-accent hover:opacity-90 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg shadow-accent/25 cursor-pointer">
                     <Send className="w-5 h-5" />
                   </button>
                 </div>

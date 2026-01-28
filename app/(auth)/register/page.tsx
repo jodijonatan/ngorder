@@ -213,7 +213,7 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group w-full relative overflow-hidden bg-accent text-white font-black py-5 rounded-2xl transition-all duration-300 hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-accent/20"
+                className="group w-full relative cursor-pointer overflow-hidden bg-accent text-white font-black py-5 rounded-2xl transition-all duration-300 hover:scale-[1.01] active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-accent/20"
               >
                 <span className="relative flex items-center justify-center tracking-widest text-xs">
                   {loading ? (

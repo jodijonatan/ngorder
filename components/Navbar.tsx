@@ -182,7 +182,7 @@ export default function Navbar() {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-accent hover:bg-accent/90 text-white px-8 py-2.5 rounded-2xl text-sm font-black tracking-widest uppercase transition-all shadow-lg shadow-accent/20 active:scale-95"
+                  className="bg-accent hover:bg-accent/90 text-white px-8 py-2.5 rounded-2xl text-sm font-black tracking-widest uppercase transition-all shadow-lg shadow-accent/20 active:scale-95 cursor-pointer"
                 >
                   Sign In
                 </button>

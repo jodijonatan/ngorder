@@ -227,7 +227,7 @@ export default async function AdminSettingsPage() {
 
         {/* Action Button */}
         <div className="mt-16 flex justify-end">
-          <button className="group relative inline-flex items-center justify-center bg-text-main text-surface font-black px-12 py-5 rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-2xl shadow-secondary/10">
+          <button className="group relative inline-flex items-center justify-center bg-text-main text-surface font-black px-12 py-5 rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-95 shadow-2xl shadow-secondary/10 cursor-pointer">
             <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity" />
             <Save className="relative w-5 h-5 mr-3 group-hover:text-surface transition-colors" />
             <span className="relative text-[10px] tracking-[0.3em] uppercase group-hover:text-surface">

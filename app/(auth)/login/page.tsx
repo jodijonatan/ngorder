@@ -148,7 +148,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full relative group overflow-hidden bg-accent text-white font-black py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 mt-4 shadow-lg shadow-accent/20"
+              className="w-full relative group cursor-pointer overflow-hidden bg-accent text-white font-black py-4 rounded-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50 mt-4 shadow-lg shadow-accent/20"
             >
               <span className="relative flex items-center justify-center">
                 {loading ? (
