@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useCart } from "@/store/cart";
 import {
@@ -23,7 +22,6 @@ export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: session } = useSession();
   const { items } = useCart();
-  const router = useRouter();
 
   const cartItemCount = items.reduce(
     (total: number, item: { qty: number }) => total + item.qty,
@@ -36,30 +34,26 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Mencegah scroll saat menu mobile terbuka
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        isDropdownOpen &&
-        !(event.target as Element).closest(".user-menu-container")
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isDropdownOpen]);
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isMenuOpen]);
 
   return (
     <nav
       className={`fixed top-0 w-full z-50 transition-all duration-500 ${
         isScrolled
           ? "bg-surface/80 backdrop-blur-xl border-b border-white/5 py-3"
-          : "bg-transparent py-3"
+          : "bg-transparent py-4"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
-          {/* Logo Section */}
+          {/* LOGO - Kiri */}
           <Link href="/" className="flex items-center space-x-3 group shrink-0">
             <div className="relative">
               <div className="absolute -inset-1 bg-gradient-to-r from-secondary to-accent rounded-xl blur opacity-20 group-hover:opacity-60 transition duration-500"></div>
@@ -67,32 +61,34 @@ export default function Navbar() {
                 <Store className="w-5 h-5 text-secondary" />
               </div>
             </div>
-            <span className="text-2xl font-black tracking-tighter text-text-main uppercase">
+            <span className="text-xl md:text-2xl font-black tracking-tighter text-text-main uppercase">
               Ng<span className="text-accent">order</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation (Right Side) */}
-          <div className="hidden md:flex items-center space-x-4">
-            {/* Admin Badge if applicable */}
-            {session?.user?.role === "ADMIN" && (
-              <Link
-                href="/admin"
-                className="text-[10px] font-bold bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full uppercase tracking-widest mr-2"
-              >
-                Admin Mode
-              </Link>
-            )}
+          {/* ACTION AREA - Kanan */}
+          <div className="flex items-center space-x-2 md:space-x-4">
+            {/* Desktop Navigation Links */}
+            <div className="hidden md:flex items-center space-x-4">
+              {session?.user?.role === "ADMIN" && (
+                <Link
+                  href="/admin"
+                  className="text-[10px] font-bold bg-secondary/10 text-secondary border border-secondary/20 px-3 py-1 rounded-full uppercase tracking-widest"
+                >
+                  Admin Mode
+                </Link>
+              )}
+            </div>
 
-            {/* Cart Icon */}
+            {/* Cart Icon (Muncul di Mobile & Desktop) */}
             {session?.user?.role !== "ADMIN" && (
               <Link
                 href="/cart"
-                className="relative p-3 text-text-muted hover:text-text-main hover:bg-white/5 rounded-2xl transition-all border border-transparent hover:border-white/5"
+                className="relative p-2.5 text-text-muted hover:text-text-main hover:bg-white/5 rounded-2xl transition-all border border-transparent"
               >
                 <ShoppingCart className="w-5 h-5" />
                 {cartItemCount > 0 && (
-                  <span className="absolute top-2 right-2 flex h-4 w-4">
+                  <span className="absolute top-1.5 right-1.5 flex h-4 w-4">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-4 w-4 bg-accent text-[9px] items-center justify-center text-white font-black">
                       {cartItemCount}
@@ -102,17 +98,18 @@ export default function Navbar() {
               </Link>
             )}
 
-            <div className="h-8 w-[1px] bg-white/5 mx-2"></div>
+            {/* Divider Desktop */}
+            <div className="hidden md:block h-8 w-[1px] bg-white/10 mx-2"></div>
 
-            {/* User Profile Dropdown */}
-            <div className="relative user-menu-container">
+            {/* User Profile (Desktop) */}
+            <div className="hidden md:block relative user-menu-container">
               {session ? (
                 <>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="flex items-center space-x-3 p-1.5 pr-4 bg-white/[0.03] border border-white/10 rounded-2xl hover:bg-white/[0.08] transition-all"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-tr from-primary to-secondary rounded-xl flex items-center justify-center text-xs font-black text-white shadow-lg shadow-primary/20">
+                    <div className="w-8 h-8 bg-gradient-to-tr from-primary to-secondary rounded-xl flex items-center justify-center text-xs font-black text-white">
                       {session.user?.name?.substring(0, 2).toUpperCase()}
                     </div>
                     <span className="text-sm font-bold text-text-main hidden lg:block">
@@ -123,15 +120,15 @@ export default function Navbar() {
                     />
                   </button>
 
-                  {/* Dropdown Menu */}
+                  {/* Dropdown Desktop */}
                   <div
-                    className={`absolute right-0 top-full mt-4 w-64 transition-all duration-300 z-50 ${
+                    className={`absolute right-0 top-full mt-4 w-64 transition-all duration-300 ${
                       isDropdownOpen
                         ? "opacity-100 translate-y-0"
                         : "opacity-0 translate-y-4 pointer-events-none"
                     }`}
                   >
-                    <div className="bg-surface border border-white/10 rounded-[2rem] shadow-2xl shadow-black/50 overflow-hidden p-3 backdrop-blur-2xl">
+                    <div className="bg-surface border border-white/10 rounded-[2rem] shadow-2xl p-3 backdrop-blur-2xl">
                       <div className="px-4 py-4 border-b border-white/5 mb-2">
                         <p className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] mb-1">
                           Authenticated as
@@ -140,7 +137,6 @@ export default function Navbar() {
                           {session.user?.email}
                         </p>
                       </div>
-
                       <div className="space-y-1">
                         <DropdownItem
                           href="/profile"
@@ -162,13 +158,9 @@ export default function Navbar() {
                             onClick={() => setIsDropdownOpen(false)}
                           />
                         )}
-
                         <div className="pt-2 mt-2 border-t border-white/5">
                           <button
-                            onClick={() => {
-                              setIsDropdownOpen(false);
-                              signOut({ callbackUrl: "/" });
-                            }}
+                            onClick={() => signOut()}
                             className="w-full flex items-center space-x-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl transition-all text-sm font-bold"
                           >
                             <LogOut className="w-4 h-4" />
@@ -182,17 +174,17 @@ export default function Navbar() {
               ) : (
                 <button
                   onClick={() => signIn()}
-                  className="bg-accent hover:bg-accent/90 text-white px-8 py-2.5 rounded-2xl text-sm font-black tracking-widest uppercase transition-all shadow-lg shadow-accent/20 active:scale-95 cursor-pointer"
+                  className="bg-accent hover:bg-accent/90 text-white px-8 py-2.5 rounded-2xl text-sm font-black tracking-widest uppercase transition-all"
                 >
                   Sign In
                 </button>
               )}
             </div>
 
-            {/* Mobile Toggle */}
+            {/* Mobile Toggle Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-3 text-text-muted hover:bg-white/5 rounded-2xl border border-white/5"
+              className="md:hidden p-2.5 text-text-muted hover:bg-white/5 rounded-2xl border border-white/5 z-[60]"
             >
               {isMenuOpen ? (
                 <X className="w-6 h-6" />
@@ -206,15 +198,24 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-surface/95 backdrop-blur-2xl z-[-1] transition-all duration-700 md:hidden ${
+        className={`fixed inset-0 bg-surface/98 backdrop-blur-2xl z-50 transition-all duration-500 md:hidden ${
           isMenuOpen
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 -translate-y-full"
+            ? "opacity-100 visible"
+            : "opacity-0 invisible pointer-events-none"
         }`}
       >
-        <div className="flex flex-col items-center justify-center h-full space-y-10">
+        <div className="flex flex-col items-center justify-center h-full space-y-8 p-6">
           {session ? (
             <>
+              <div className="text-center mb-4">
+                <div className="w-20 h-20 bg-gradient-to-tr from-primary to-secondary rounded-3xl mx-auto flex items-center justify-center text-2xl font-black text-white mb-4 shadow-xl">
+                  {session.user?.name?.substring(0, 2).toUpperCase()}
+                </div>
+                <p className="text-xl font-bold text-text-main">
+                  {session.user?.name}
+                </p>
+                <p className="text-sm text-text-muted">{session.user?.email}</p>
+              </div>
               <MobileNavLink
                 href="/profile"
                 label="Profile"
@@ -232,7 +233,7 @@ export default function Navbar() {
               />
               <button
                 onClick={() => signOut()}
-                className="text-red-500 font-black text-2xl uppercase tracking-tighter"
+                className="w-full py-4 bg-red-500/10 text-red-500 rounded-2xl font-black text-xl uppercase tracking-tighter"
               >
                 Sign Out
               </button>
@@ -240,7 +241,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => signIn()}
-              className="text-accent font-black text-4xl uppercase tracking-tighter"
+              className="text-accent font-black text-5xl uppercase tracking-tighter"
             >
               Sign In
             </button>
@@ -270,7 +271,7 @@ function MobileNavLink({ href, label, onClick }: any) {
     <Link
       href={href}
       onClick={onClick}
-      className="text-text-main font-black text-4xl uppercase tracking-tighter hover:text-secondary transition-colors"
+      className="text-text-main font-black text-3xl uppercase tracking-tighter hover:text-secondary transition-colors"
     >
       {label}
     </Link>
