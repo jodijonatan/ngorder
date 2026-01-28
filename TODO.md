@@ -1,11 +1,6 @@
-# Color Template Implementation Plan
+# TODO: Implement Checkout Feature
 
-## Tasks
-
-- [ ] Update app/layout.tsx to use CSS variables for body background and text colors
-- [ ] Update components/Navbar.tsx to replace hardcoded colors with CSS variables
-- [ ] Update app/(auth)/login/page.tsx to use CSS variables for backgrounds and text
-- [ ] Update components/Footer.tsx to use CSS variables for gradients and text colors
-- [ ] Add additional CSS variables in app/globals.css if needed for better consistency
-- [ ] Test the application to ensure color consistency across pages
-- [ ] Verify that the color scheme matches the intended design
+- [ ] Update prisma/schema.prisma to add OrderItem model
+- [ ] Run prisma generate and migrate
+- [ ] Update app/api/checkout/route.ts to implement checkout logic
+- [ ] Update app/(user)/cart/page.tsx to make the Secure Checkout button functional

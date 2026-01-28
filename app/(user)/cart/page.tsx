@@ -3,7 +3,7 @@
 import { useCart } from "@/store/cart";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Minus,
@@ -15,9 +15,11 @@ import {
 } from "lucide-react";
 
 export default function CartPage() {
-  const { items, updateQuantity, removeItem, getTotalPrice } = useCart();
+  const { items, updateQuantity, removeItem, getTotalPrice, clearCart } =
+    useCart();
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -28,6 +30,29 @@ export default function CartPage() {
   }, [session, status, router]);
 
   const totalPrice = getTotalPrice();
+
+  const handleCheckout = async () => {
+    if (isCheckingOut) return;
+    setIsCheckingOut(true);
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        clearCart();
+        router.push("/shop"); // or to a success page
+      } else {
+        alert(data.error || "Checkout failed");
+      }
+    } catch (error) {
+      alert("An error occurred during checkout");
+    } finally {
+      setIsCheckingOut(false);
+    }
+  };
 
   if (items.length === 0) {
     return (
@@ -182,7 +207,11 @@ export default function CartPage() {
               </div>
 
               <div className="space-y-3">
-                <button className="group relative w-full overflow-hidden rounded-2xl bg-text-main py-5 font-bold text-surface transition-all hover:scale-[1.02] active:scale-95 cursor-pointer">
+                <button
+                  onClick={handleCheckout}
+                  disabled={isCheckingOut}
+                  className="group relative w-full overflow-hidden rounded-2xl bg-text-main py-5 font-bold text-surface transition-all hover:scale-[1.02] active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
@@ -190,7 +219,7 @@ export default function CartPage() {
                   <div className="relative flex items-center justify-center space-x-3">
                     <CreditCard className="h-5 w-5 transition-colors group-hover:text-white" />
                     <span className="text-[11px] uppercase tracking-[0.15em] transition-colors group-hover:text-white">
-                      Secure Checkout
+                      {isCheckingOut ? "Processing..." : "Secure Checkout"}
                     </span>
                   </div>
                 </button>
