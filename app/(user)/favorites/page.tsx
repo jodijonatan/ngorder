@@ -83,7 +83,7 @@ export default function FavoritesPage() {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen bg-surface text-text-main p-8 relative overflow-hidden">
+    <div className="min-h-screen bg-surface text-text-main p-8 relative overflow-hidden pt-30">
       {/* Background Decor subtle */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -z-10" />
 

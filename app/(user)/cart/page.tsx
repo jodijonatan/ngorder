@@ -91,7 +91,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface text-text-main p-8 relative overflow-x-hidden">
+    <div className="min-h-screen bg-surface text-text-main p-8 py-16 relative overflow-x-hidden">
       {/* Decorative Elements */}
       <div className="fixed top-0 right-0 w-[600px] h-[600px] bg-secondary/5 blur-[140px] -z-10" />
       <div className="fixed bottom-0 left-0 w-[400px] h-[400px] bg-accent/5 blur-[120px] -z-10" />
