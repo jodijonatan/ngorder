@@ -8,7 +8,11 @@ export default function HomePage() {
       <section className="relative overflow-hidden">
         {/* Background Decor */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" />
+          {/* <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-secondary/20" /> */}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/images/background.jpg')" }}
+          />
           <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-secondary/10 blur-[100px] rounded-full" />
           <div className="absolute bottom-[-20%] left-[-10%] w-[60%] h-[60%] bg-primary/10 blur-[100px] rounded-full" />
         </div>
