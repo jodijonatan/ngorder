@@ -15,8 +15,8 @@ interface Product {
 // Tambahkan definisi Props
 interface ProductCardProps {
   product: Product;
-  isFavorite: boolean;
-  onToggleFavorite: (e: React.MouseEvent, id: string) => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (e: React.MouseEvent, id: string) => void;
 }
 
 export default function ProductCard({
