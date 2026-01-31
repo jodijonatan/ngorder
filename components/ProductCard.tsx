@@ -28,7 +28,7 @@ export default function ProductCard({
     <div className="group block w-full relative">
       {/* Tombol Wishlist - Sekarang di dalam Komponen Card */}
       <button
-        onClick={(e) => onToggleFavorite(e, product.id)}
+        onClick={(e) => onToggleFavorite?.(e, product.id)}
         className="absolute top-3 right-3 z-20 p-2 bg-white/80 backdrop-blur-md rounded-xl shadow-sm border border-slate-50 hover:scale-110 active:scale-90 transition-all"
       >
         <Heart
