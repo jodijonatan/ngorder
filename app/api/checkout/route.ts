@@ -19,34 +19,82 @@ export async function POST(request: NextRequest) {
     }
 
     const { items }: { items: CartItem[] } = await request.json();
-    if (!items || !Array.isArray(items) || items.length === 0) {
-      return Response.json({ error: "No items in cart" }, { status: 400 });
+    if (!items || items.length === 0) {
+      return Response.json({ error: "Cart is empty" }, { status: 400 });
     }
 
-    const total = items.reduce((sum, item) => sum + item.price * item.qty, 0);
+    // Ambil data produk terbaru untuk cek stok dan harga
+    const productIds = items.map((item) => item.id);
+    const dbProducts = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+    });
 
-    // Create order
-    const order = await prisma.order.create({
-      data: {
-        total,
-        status: "pending",
-        userId: user.id,
-        orderItems: {
-          create: items.map((item) => ({
-            productId: item.id,
-            quantity: item.qty,
-            price: item.price,
-          })),
+    // Validasi stok sebelum memulai transaksi
+    for (const item of items) {
+      const product = dbProducts.find((p) => p.id === item.id);
+      if (!product) {
+        return Response.json(
+          { error: `Product ${item.name} not found` },
+          { status: 404 },
+        );
+      }
+      if (product.stock < item.qty) {
+        return Response.json(
+          {
+            error: `Stock insufficient for ${product.name}. Available: ${product.stock}`,
+          },
+          { status: 400 },
+        );
+      }
+    }
+
+    // Jalankan transaksi: Buat Order + Kurangi Stok
+    const result = await prisma.$transaction(async (tx) => {
+      let total = 0;
+      const orderItemsData = [];
+
+      for (const item of items) {
+        const product = dbProducts.find((p) => p.id === item.id)!;
+        total += product.price * item.qty;
+
+        // 1. Kurangi stok produk
+        await tx.product.update({
+          where: { id: product.id },
+          data: {
+            stock: {
+              decrement: item.qty, // Fungsi Prisma untuk kurangi nilai secara atomik
+            },
+          },
+        });
+
+        orderItemsData.push({
+          productId: product.id,
+          quantity: item.qty,
+          price: product.price,
+        });
+      }
+
+      // 2. Buat data order
+      const newOrder = await tx.order.create({
+        data: {
+          total,
+          status: "pending",
+          userId: user.id,
+          orderItems: {
+            create: orderItemsData,
+          },
         },
-      },
+      });
+
+      return newOrder;
     });
 
     return Response.json({
       message: "Order created successfully",
-      orderId: order.id,
+      orderId: result.id,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Checkout error:", error);
-    return Response.json({ error: "Internal server error" }, { status: 500 });
+    return Response.json({ error: "Failed to process order" }, { status: 500 });
   }
 }

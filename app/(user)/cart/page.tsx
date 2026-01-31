@@ -10,8 +10,8 @@ import {
   Plus,
   Trash2,
   ShoppingBag,
-  ArrowRight,
   CreditCard,
+  Loader2,
 } from "lucide-react";
 
 export default function CartPage() {
@@ -19,31 +19,46 @@ export default function CartPage() {
     useCart();
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // 1. Pastikan data dari localStorage sudah dimuat (Hydration)
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // 2. Proteksi Role Admin
   useEffect(() => {
     if (status === "loading") return;
     if (session?.user?.role === "ADMIN") {
       router.push("/admin");
-      return;
     }
   }, [session, status, router]);
 
   const totalPrice = getTotalPrice();
 
   const handleCheckout = async () => {
+    if (status === "unauthenticated") {
+      router.push("/login?callbackUrl=/cart");
+      return;
+    }
+
     if (isCheckingOut) return;
     setIsCheckingOut(true);
+
     try {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ items }),
       });
+
       const data = await response.json();
+
       if (response.ok) {
         clearCart();
-        router.push("/shop"); // or to a success page
+        router.push("/shop");
       } else {
         alert(data.error || "Checkout failed");
       }
@@ -54,18 +69,25 @@ export default function CartPage() {
     }
   };
 
+  // Tampilkan loading saat menunggu sinkronisasi data
+  if (!isHydrated || status === "loading") {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-secondary" />
+      </div>
+    );
+  }
+
+  // Tampilan jika keranjang kosong
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-surface text-text-main flex items-center justify-center p-8 relative overflow-hidden">
-        {/* Background Ambience */}
         <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-secondary/5 blur-[120px] -z-10" />
-
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <div className="relative inline-block">
             <div className="absolute inset-0 bg-secondary/20 blur-3xl rounded-full" />
             <ShoppingBag className="w-32 h-32 mx-auto text-secondary relative animate-pulse" />
           </div>
-
           <div className="space-y-2">
             <h1 className="text-5xl font-black tracking-tighter uppercase italic">
               Empty <span className="text-text-muted">Vault</span>
@@ -74,7 +96,6 @@ export default function CartPage() {
               Belum ada transmisi data produk di keranjang Anda
             </p>
           </div>
-
           <Link
             href="/shop"
             className="group relative inline-flex items-center space-x-3 bg-white text-black font-black px-10 py-5 rounded-2xl overflow-hidden transition-all hover:scale-[1.05] active:scale-95 shadow-2xl shadow-white/5"
@@ -90,6 +111,7 @@ export default function CartPage() {
     );
   }
 
+  // Tampilan Utama Cart (Sesuai desain kamu)
   return (
     <div className="min-h-screen bg-surface text-text-main p-8 py-16 relative overflow-x-hidden">
       {/* Decorative Elements */}
@@ -116,7 +138,7 @@ export default function CartPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Cart Items List */}
+          {/* List Item */}
           <div className="lg:col-span-2 space-y-6">
             {items.map((item) => (
               <div
@@ -129,28 +151,23 @@ export default function CartPage() {
                       {item.name}
                     </h3>
                     <p className="text-secondary font-bold text-sm">
-                      Rp {item.price.toLocaleString()}{" "}
-                      <span className="text-[10px] text-text-muted uppercase ml-2 tracking-widest">
-                        / Unit
-                      </span>
+                      Rp {item.price.toLocaleString()}
                     </p>
                   </div>
 
                   <div className="flex items-center space-x-6 bg-white/[0.03] p-2 rounded-2xl border border-white/5">
                     <button
                       onClick={() => updateQuantity(item.id, item.qty - 1)}
-                      className="w-10 h-10 bg-white/5 hover:bg-secondary hover:text-surface rounded-xl flex items-center justify-center transition-all active:scale-90 cursor-pointer"
+                      className="w-10 h-10 bg-white/5 hover:bg-secondary hover:text-surface rounded-xl flex items-center justify-center transition-all active:scale-90"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
-
                     <span className="text-lg font-black italic w-6 text-center">
                       {item.qty}
                     </span>
-
                     <button
                       onClick={() => updateQuantity(item.id, item.qty + 1)}
-                      className="w-10 h-10 bg-white/5 hover:bg-secondary hover:text-surface rounded-xl flex items-center justify-center transition-all active:scale-90 cursor-pointer"
+                      className="w-10 h-10 bg-white/5 hover:bg-secondary hover:text-surface rounded-xl flex items-center justify-center transition-all active:scale-90"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -164,22 +181,21 @@ export default function CartPage() {
 
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="p-4 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300 group/trash cursor-pointer"
+                    className="p-4 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300"
                   >
-                    <Trash2 className="w-5 h-5 group-hover/trash:rotate-12" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Order Summary Sidebar */}
+          {/* Sidebar Summary */}
           <div className="relative">
             <div className="bg-white/[0.02] border border-white/5 rounded-[3rem] p-10 backdrop-blur-xl h-fit sticky top-8">
               <h2 className="text-xs font-black uppercase tracking-[0.3em] mb-10 text-text-muted border-b border-white/5 pb-4">
                 Summary Report
               </h2>
-
               <div className="space-y-6 mb-10">
                 <div className="flex justify-between items-center text-sm font-bold uppercase tracking-widest">
                   <span className="text-text-muted">Subtotal</span>
@@ -191,46 +207,29 @@ export default function CartPage() {
                   <span className="text-text-muted">Logistics</span>
                   <span className="text-accent italic">Free Protocol</span>
                 </div>
-
                 <div className="pt-6 border-t border-white/10">
-                  <div className="flex flex-col space-y-2">
-                    <span className="text-[10px] font-black text-secondary uppercase tracking-[0.4em]">
-                      Net Payable
-                    </span>
-                    <div className="flex justify-between items-end">
-                      <span className="text-4xl font-black italic tracking-tighter">
-                        Rp {totalPrice.toLocaleString()}
-                      </span>
-                    </div>
+                  <span className="text-[10px] font-black text-secondary uppercase tracking-[0.4em]">
+                    Net Payable
+                  </span>
+                  <div className="text-4xl font-black italic tracking-tighter">
+                    Rp {totalPrice.toLocaleString()}
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <button
-                  onClick={handleCheckout}
-                  disabled={isCheckingOut}
-                  className="group relative w-full overflow-hidden rounded-2xl bg-text-main py-5 font-bold text-surface transition-all hover:scale-[1.02] active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-                  {/* Content Container */}
-                  <div className="relative flex items-center justify-center space-x-3">
-                    <CreditCard className="h-5 w-5 transition-colors group-hover:text-white" />
-                    <span className="text-[11px] uppercase tracking-[0.15em] transition-colors group-hover:text-white">
-                      {isCheckingOut ? "Processing..." : "Secure Checkout"}
-                    </span>
-                  </div>
-                </button>
-
-                <Link
-                  href="/shop"
-                  className="w-full py-4 text-center block text-[10px] font-black text-text-muted hover:text-secondary uppercase tracking-[0.3em] transition-colors"
-                >
-                  Return to Store
-                </Link>
-              </div>
+              <button
+                onClick={handleCheckout}
+                disabled={isCheckingOut}
+                className="group relative w-full overflow-hidden rounded-2xl bg-text-main py-5 font-bold text-surface transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-secondary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative flex items-center justify-center space-x-3">
+                  <CreditCard className="h-5 w-5" />
+                  <span className="text-[11px] uppercase tracking-[0.15em]">
+                    {isCheckingOut ? "Processing..." : "Secure Checkout"}
+                  </span>
+                </div>
+              </button>
             </div>
           </div>
         </div>
