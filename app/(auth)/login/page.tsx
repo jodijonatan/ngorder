@@ -22,6 +22,19 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // --- FUNGSI LOGIN GOOGLE ---
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    try {
+      // Menghubungi provider google yang sudah di-set di api/auth/[...nextauth]
+      await signIn("google", { callbackUrl: "/" });
+    } catch (error) {
+      setError("Gagal login dengan Google. Silakan coba lagi.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -38,7 +51,7 @@ export default function LoginPage() {
       if (result?.error) {
         setError("Email atau password tidak sesuai. Silakan coba lagi.");
       } else {
-        router.push("/redirect");
+        router.push("/");
       }
     } catch (error) {
       setError("Terjadi gangguan koneksi. Coba beberapa saat lagi.");
@@ -48,16 +61,13 @@ export default function LoginPage() {
   };
 
   return (
-    // Menggunakan bg-surface sebagai background utama
     <div className="min-h-screen relative flex items-center justify-center p-6 overflow-hidden bg-surface">
-      {/* Background Decor menggunakan variabel global */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-secondary/10 blur-[120px] rounded-full" />
       </div>
 
       <div className="max-w-md w-full relative z-10">
-        {/* Back Button */}
         <Link
           href="/"
           className="inline-flex items-center text-text-muted hover:text-text-main transition-colors mb-8 group"
@@ -66,11 +76,8 @@ export default function LoginPage() {
           <span className="text-sm font-medium">Kembali ke Beranda</span>
         </Link>
 
-        {/* Card Container */}
         <div className="bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-[2.5rem] p-8 md:p-10 shadow-2xl">
-          {/* Header */}
           <div className="mb-10 text-center">
-            {/* Icon menggunakan gradient Secondary ke Accent */}
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-secondary to-accent mb-6 shadow-xl shadow-secondary/20 ring-4 ring-white/5">
               <LogIn className="w-8 h-8 text-white" />
             </div>
@@ -89,7 +96,6 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Email Field */}
             <div className="space-y-2">
               <label className="text-xs font-bold text-text-muted uppercase tracking-widest ml-1">
                 Email Address
@@ -107,7 +113,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Password Field */}
             <div className="space-y-2">
               <div className="flex justify-between items-center px-1">
                 <label className="text-xs font-bold text-text-muted uppercase tracking-widest">
@@ -144,7 +149,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Submit Button - Menggunakan warna Accent sebagai CTA Utama */}
             <button
               type="submit"
               disabled={loading}
@@ -160,7 +164,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Social Divider */}
           <div className="relative my-8">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-white/5"></div>
@@ -172,16 +175,21 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <button className="w-full flex items-center justify-center space-x-3 bg-white/[0.03] border border-white/10 text-text-main py-4 rounded-2xl font-bold text-sm hover:bg-white/[0.08] transition-all">
+          {/* --- TOMBOL GOOGLE DENGAN ONCLICK --- */}
+          <button
+            type="button"
+            disabled={loading}
+            onClick={handleGoogleSignIn}
+            className="w-full flex items-center justify-center space-x-3 bg-white/[0.03] border border-white/10 text-text-main py-4 rounded-2xl font-bold text-sm hover:bg-white/[0.08] transition-all active:scale-[0.98] disabled:opacity-50"
+          >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               className="w-5 h-5"
               alt="Google"
             />
-            <span>Google Account</span>
+            <span>{loading ? "Menghubungkan..." : "Google Account"}</span>
           </button>
 
-          {/* Register Link */}
           <p className="mt-10 text-center text-sm text-text-muted font-medium">
             Baru di Ngorder?{" "}
             <Link
@@ -193,7 +201,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Security Badge */}
         <div className="mt-8 flex items-center justify-center space-x-2 text-text-muted/40">
           <ShieldCheck className="w-4 h-4" />
           <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
