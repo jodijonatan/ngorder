@@ -58,7 +58,11 @@ export default function CartPage() {
 
       if (response.ok) {
         clearCart();
-        router.push("/shop");
+        if (data.paymentUrl) {
+          window.location.href = data.paymentUrl;
+        } else {
+          router.push("/shop");
+        }
       } else {
         alert(data.error || "Checkout failed");
       }
