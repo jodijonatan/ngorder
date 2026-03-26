@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     // Get total stats
     const [totalUsers, totalProducts, totalOrders, totalRevenue] =
       await Promise.all([
@@ -16,11 +23,11 @@ export async function GET() {
         }),
       ]);
 
-    // Get recent orders with user info
+    // Get recent orders with user info — sorted by createdAt
     const recentOrders = await prisma.order.findMany({
       take: 5,
       orderBy: {
-        id: "desc", // Assuming id is auto-incrementing, this will get recent orders
+        createdAt: "desc",
       },
       include: {
         user: {

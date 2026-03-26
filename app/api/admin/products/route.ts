@@ -22,25 +22,12 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("POST /api/admin/products called");
-
-    // Temporarily disable auth check to test basic functionality
-    // const session = await getServerSession(authOptions);
-    // console.log("Session:", session);
-
-    // if (!session) {
-    //   console.log("No session found");
-    //   return NextResponse.json({ error: "No session" }, { status: 401 });
-    // }
-
-    // if (session.user.role !== "ADMIN") {
-    //   console.log("User role:", session.user.role);
-    //   return NextResponse.json({ error: "Not admin" }, { status: 401 });
-    // }
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     const body = await req.json();
-    console.log("Request body:", body);
-
     const { name, slug, price, stock, description, image } = body;
 
     if (!name || !slug || price === undefined || stock === undefined) {
@@ -61,7 +48,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log("Product created:", product);
     return NextResponse.json(product);
   } catch (error) {
     console.error("Error creating product:", error);

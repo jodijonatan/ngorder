@@ -5,16 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Upload,
-  X,
   Package,
-  DollarSign,
   Hash,
   FileText,
   Save,
   Loader2,
   Sparkles,
   Image as ImageIcon,
+  Link as LinkIcon,
 } from "lucide-react";
 
 export default function CreateProductPage() {
@@ -24,8 +22,7 @@ export default function CreateProductPage() {
   const [price, setPrice] = useState("");
   const [stock, setStock] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -35,25 +32,6 @@ export default function CreateProductPage() {
       router.push("/");
     }
   }, [session, status, router]);
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Ukuran gambar maksimal 5MB");
-        return;
-      }
-      setImage(file);
-      const reader = new FileReader();
-      reader.onload = () => setImagePreview(reader.result as string);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const removeImage = () => {
-    setImage(null);
-    setImagePreview(null);
-  };
 
   const generateSlug = (name: string) => {
     return name
@@ -71,11 +49,6 @@ export default function CreateProductPage() {
 
     try {
       const slug = generateSlug(name);
-      let imageUrl = null;
-
-      if (image) {
-        imageUrl = imagePreview;
-      }
 
       const response = await fetch("/api/admin/products", {
         method: "POST",
@@ -85,7 +58,7 @@ export default function CreateProductPage() {
           price: parseFloat(price),
           stock: parseInt(stock),
           description,
-          image: imageUrl,
+          image: imageUrl || null,
         }),
         headers: { "Content-Type": "application/json" },
       });
@@ -150,47 +123,38 @@ export default function CreateProductPage() {
                 </h3>
               </div>
 
-              <div className="relative group">
-                {imagePreview ? (
-                  <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl group">
-                    <img
-                      src={imagePreview}
-                      alt="Preview"
-                      className="w-full aspect-square object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-surface/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-                      <button
-                        type="button"
-                        onClick={removeImage}
-                        className="bg-red-500 hover:bg-red-600 text-white p-4 rounded-full transform scale-90 group-hover:scale-100 transition-all shadow-xl shadow-red-500/20"
-                      >
-                        <X className="w-6 h-6" />
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <label
-                    htmlFor="image-upload"
-                    className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed border-white/5 rounded-[2rem] hover:bg-white/[0.03] hover:border-secondary/50 transition-all cursor-pointer group"
-                  >
-                    <div className="p-6 bg-white/5 rounded-full mb-4 group-hover:scale-110 group-hover:bg-secondary/10 transition-all">
-                      <Upload className="w-8 h-8 text-text-muted group-hover:text-secondary" />
-                    </div>
-                    <p className="text-xs font-black text-text-main uppercase tracking-tighter">
-                      Drop Product Image
-                    </p>
-                    <p className="text-[9px] text-text-muted mt-2 uppercase tracking-widest font-bold opacity-50">
-                      High Quality Jpeg/Png • Max 5MB
-                    </p>
-                    <input
-                      id="image-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="hidden"
-                    />
-                  </label>
-                )}
+              {/* Image URL Preview */}
+              {imageUrl && (
+                <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl mb-4">
+                  <img
+                    src={imageUrl}
+                    alt="Preview"
+                    className="w-full aspect-square object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Image URL Input */}
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-text-muted uppercase tracking-[0.3em] ml-1">
+                  Image URL
+                </label>
+                <div className="relative group">
+                  <LinkIcon className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted group-focus-within:text-secondary transition-colors" />
+                  <input
+                    type="url"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    className="w-full bg-black/20 border border-white/5 rounded-2xl pl-14 pr-6 py-5 text-text-main text-sm font-medium focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary/50 transition-all placeholder:text-text-muted/30"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+                <p className="text-[9px] text-text-muted font-bold uppercase tracking-widest opacity-50 ml-1">
+                  Masukkan URL gambar produk (PNG, JPG)
+                </p>
               </div>
             </div>
           </div>

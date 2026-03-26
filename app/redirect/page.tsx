@@ -13,7 +13,7 @@ export default function RedirectPage() {
 
     if (session?.user) {
       // Gunakan router.replace agar tidak bisa di-"back" ke halaman loading ini
-      if (session.user.role === "admin") {
+      if (session.user.role === "ADMIN") {
         router.replace("/admin");
       } else {
         router.replace("/shop");

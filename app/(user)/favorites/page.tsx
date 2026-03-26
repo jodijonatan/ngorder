@@ -40,12 +40,13 @@ export default function FavoritesPage() {
       const storedFavorites = localStorage.getItem("favorites");
       if (storedFavorites) {
         const favoriteIds = JSON.parse(storedFavorites);
-        const response = await fetch("/api/products");
+        if (favoriteIds.length === 0) {
+          setFavorites([]);
+          return;
+        }
+        const response = await fetch(`/api/products?ids=${favoriteIds.join(",")}`);
         if (response.ok) {
-          const allProducts = await response.json();
-          const favoriteProducts = allProducts.filter((product: Product) =>
-            favoriteIds.includes(product.id),
-          );
+          const favoriteProducts = await response.json();
           setFavorites(favoriteProducts);
         }
       }

@@ -4,11 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ChevronLeft,
-  ShoppingCart,
   ShieldCheck,
   Truck,
   RefreshCcw,
 } from "lucide-react";
+import AddToCartButton from "@/components/AddToCartButton";
 
 // Tipe untuk params di Next.js 15+
 type Props = {
@@ -121,19 +121,8 @@ export default async function ProductDetailPage({ params }: Props) {
                 </div>
               </div>
 
-              {/* Action Button */}
               <div className="pt-8">
-                <button
-                  disabled={product.stock <= 0}
-                  className={`w-full py-5 rounded-[2rem] font-black uppercase tracking-[0.2em] flex items-center justify-center space-x-3 transition-all transform active:scale-95 shadow-lg ${
-                    product.stock > 0
-                      ? "bg-slate-900 text-white hover:bg-emerald-600 shadow-emerald-500/20"
-                      : "bg-slate-200 text-slate-400 cursor-not-allowed"
-                  }`}
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  <span>Tambahkan ke Keranjang</span>
-                </button>
+                <AddToCartButton product={product} />
               </div>
             </div>
           </div>

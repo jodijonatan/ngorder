@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
         name: user.name || "Customer",
         email: user.email,
         amount: result.total,
-        mobile: "08123456789", // Placeholder, idealnya dari profil user
+        mobile: session?.user?.email || "customer@ngorder.com", // TODO: Add phone field to user profile
         description: `Order #${result.id} for ${items.length} items`,
         payload: { orderId: result.id },
         redirectUrl: `${process.env.NEXTAUTH_URL}/shop`, // Redirect balik ke toko

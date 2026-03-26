@@ -101,7 +101,7 @@ export default function ProfilePage() {
                 <InfoItem
                   icon={<Calendar className="w-5 h-5" />}
                   label="Bergabung Sejak"
-                  value="Januari 2026"
+                  value={new Date().toLocaleDateString("id-ID", { month: "long", year: "numeric" })}
                 />
               </div>
             </div>
