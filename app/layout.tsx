@@ -2,6 +2,7 @@ import "./globals.css";
 import Providers from "./providers";
 // import Navbar from "@/components/Navbar";
 import { Metadata } from "next";
+import Script from "next/script";
 
 // Konfigurasi Metadata Global
 export const metadata: Metadata = {
@@ -24,6 +25,12 @@ export default function RootLayout({
   return (
     <html lang="id" className="scroll-smooth">
       <body className="bg-surface text-text-main antialiased selection:bg-secondary/30 selection:text-secondary">
+        {/* Midtrans Snap.js — Sandbox Mode */}
+        <Script
+          src="https://app.sandbox.midtrans.com/snap/snap.js"
+          data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || "SB-Mid-client-YOUR_CLIENT_KEY"}
+          strategy="beforeInteractive"
+        />
         <Providers>
           {/* Global Background Infrastructure */}
           <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">

@@ -40,7 +40,7 @@ model Order {
   status     String
   userId     String
   paymentUrl String?
-  mayarId    String?
+  snapToken  String?
   user       User        @relation(fields: [userId], references: [id])
   orderItems OrderItem[]
   createdAt  DateTime    @default(now())

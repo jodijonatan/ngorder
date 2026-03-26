@@ -56,13 +56,30 @@ export default function CartPage() {
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.token) {
+        // Buka Midtrans Snap Popup
+        (window as any).snap.pay(data.token, {
+          onSuccess: () => {
+            clearCart();
+            alert("Pembayaran berhasil! Terima kasih.");
+            router.push("/shop");
+          },
+          onPending: () => {
+            clearCart();
+            alert("Pembayaran sedang diproses. Silakan selesaikan pembayaran.");
+            router.push("/shop");
+          },
+          onError: () => {
+            alert("Pembayaran gagal. Silakan coba lagi.");
+          },
+          onClose: () => {
+            console.log("Snap popup ditutup oleh user");
+          },
+        });
+      } else if (response.ok && data.redirect_url) {
+        // Fallback: redirect ke halaman pembayaran
         clearCart();
-        if (data.paymentUrl) {
-          window.location.href = data.paymentUrl;
-        } else {
-          router.push("/shop");
-        }
+        window.location.href = data.redirect_url;
       } else {
         alert(data.error || "Checkout failed");
       }

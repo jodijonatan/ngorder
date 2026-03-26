@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { CartItem } from "@/store/cart";
-import { createPaylink } from "@/lib/mayar";
+import { createTransaction } from "@/lib/midtrans";
 
 export async function POST(request: NextRequest) {
   try {
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
         });
       }
 
-      // 2. Buat data order awal
+      // 2. Buat data order
       const newOrder = await tx.order.create({
         data: {
           total,
@@ -95,42 +95,60 @@ export async function POST(request: NextRequest) {
       return newOrder;
     });
 
-    // 3. Buat Paylink Mayar (di luar transaksi Prisma agar tidak nge-lock DB kelamaan)
+    // 3. Buat Midtrans Snap Transaction
     try {
-      const paylink = await createPaylink({
-        name: user.name || "Customer",
-        email: user.email,
-        amount: result.total,
-        mobile: session?.user?.email || "customer@ngorder.com", // TODO: Add phone field to user profile
-        description: `Order #${result.id} for ${items.length} items`,
-        payload: { orderId: result.id },
-        redirectUrl: `${process.env.NEXTAUTH_URL}/shop`, // Redirect balik ke toko
+      const midtransItems = items.map((item) => {
+        const product = dbProducts.find((p) => p.id === item.id)!;
+        return {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          quantity: item.qty,
+        };
       });
 
-      // Update order dengan link pembayaran
+      const transaction = await createTransaction({
+        orderId: result.id,
+        grossAmount: result.total,
+        items: midtransItems,
+        customer: {
+          firstName: user.name || "Customer",
+          email: user.email,
+        },
+      });
+
+      // Simpan snap token ke order
       await prisma.order.update({
         where: { id: result.id },
         data: {
-          paymentUrl: paylink.link,
-          mayarId: paylink.id,
+          snapToken: transaction.token,
+          paymentUrl: transaction.redirect_url,
         },
       });
 
       return Response.json({
         message: "Order created successfully",
         orderId: result.id,
-        paymentUrl: paylink.link,
+        token: transaction.token,
+        redirect_url: transaction.redirect_url,
       });
-    } catch (mayarError: any) {
-      console.error("Mayar paylink error:", mayarError);
+    } catch (midtransError: any) {
+      console.error("MIDTRANS ERROR DETAILS:", {
+        message: midtransError.message,
+        stack: midtransError.stack,
+        response: midtransError.ApiResponse,
+      });
       return Response.json({
         message: "Order created, but payment initialization failed",
         orderId: result.id,
-        error: mayarError.message,
+        error: midtransError.message,
       }, { status: 500 });
     }
   } catch (error: any) {
-    console.error("Checkout error:", error);
-    return Response.json({ error: "Failed to process order" }, { status: 500 });
+    console.error("CHECKOUT CRITICAL ERROR:", error);
+    return Response.json({ 
+      error: "Failed to process order", 
+      details: error.message 
+    }, { status: 500 });
   }
 }
